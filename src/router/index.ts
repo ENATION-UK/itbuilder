@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import('../views/status.vue'),
     },
     {
+      path: '/settings',
+      name: 'settings',
+      component: () => import('../views/settings.vue'),
+    },
+    {
       path: '/ai',
       name: 'ai',
       component: () => import('../components/ai.vue'),

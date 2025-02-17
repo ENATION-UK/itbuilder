@@ -1,6 +1,7 @@
 import  { Observable,Subject } from "rxjs";
 import OpenAI from "openai";
 import { ElectronAPI } from '../utils/electron-api.ts';
+import { settings, loadSettings } from '../utils/settings';
 
 // 定义任务接口
 export interface ITask  {
@@ -14,15 +15,17 @@ export interface ITask  {
 
 // 基础任务类
 export abstract class Task implements ITask {
-    private client: OpenAI;
-    constructor() {
-        this.client = new OpenAI({
-            apiKey: "sk-a170513882ac48159ce496f405fd0ea2", // This is the default and can be omitted
-            // apiKey: "sk-3b56bc4ff42b4224a6652e5c035c8926", // This is the default and can be omitted
-            baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
-            // baseURL: "https://api.deepseek.com/v1",
-            dangerouslyAllowBrowser: true
-        });
+    private client: OpenAI | null = null;
+
+    private getClient(): OpenAI {
+        if (!this.client) {
+            this.client = new OpenAI({
+                apiKey: settings.apiKey || "",
+                baseURL: settings.apiUrl || "https://api.openai.com/v1",
+                dangerouslyAllowBrowser: true,
+            });
+        }
+        return this.client;
     }
 
 
@@ -43,14 +46,15 @@ export abstract class Task implements ITask {
     }
 
     protected async *streamChat(sysPrompt: string, userIdea: string): AsyncGenerator<string>{
-        const chatCompletion = await this.client.chat.completions.create({
+        await loadSettings(); // 确保 settings 加载完成
+        const client = this.getClient();
+        const chatCompletion = await client.chat.completions.create({
             messages: [
                 {role: 'system', content: sysPrompt},
                 {role: 'user', content: userIdea}
             ],
-            model: 'qwen-long',
-            max_tokens: 2000,
-            // model: 'deepseek-reasoner',
+            model: settings.modelName,
+            max_tokens: parseInt(settings.maxToken) || 2000,
             temperature: this.temperature(),
             stream: true
         });
@@ -88,13 +92,17 @@ export abstract class Task implements ITask {
     }
 
     private async innerChat(sysPrompt: string, userIdea: string): Promise<string | null> {
-        const chatCompletion = await this.client.chat.completions.create({
+
+        await loadSettings(); // 确保 settings 加载完成
+        const client = this.getClient();
+
+        const chatCompletion = await client.chat.completions.create({
             messages: [
                 {role: 'system', content: sysPrompt},
                 {role: 'user', content: userIdea}
             ],
-            model: 'qwen-long',
-            max_tokens: 2000,
+            model: settings.modelName,
+            max_tokens: parseInt(settings.maxToken) || 2000,
             // model: 'deepseek-reasoner',
             temperature: this.temperature(),
         });

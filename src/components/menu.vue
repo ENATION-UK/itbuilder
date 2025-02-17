@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import {ref, shallowRef, watchEffect} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { Code20Regular, Window16Regular, DocumentOnePage20Regular } from '@vicons/fluent'
+import { Code20Regular, Window16Regular, DocumentOnePage20Regular,Settings24Filled } from '@vicons/fluent'
 import Ai from '@/assets/AI.svg'
 
 // 使用 ref 包裹 icons
@@ -29,6 +29,7 @@ const icons = shallowRef([
   { component: Code20Regular, route: '/status', active: false },
   { component: Window16Regular, route: '/play/ui', active: false },
   { component: DocumentOnePage20Regular, route: '/play/doc', active: false },
+  { component: Settings24Filled, route: '/settings', active: false },
 ])
 
 // 路由管理
