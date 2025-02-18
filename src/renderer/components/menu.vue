@@ -19,7 +19,7 @@
 import {ref, shallowRef, watchEffect} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Code20Regular, Window16Regular, DocumentOnePage20Regular,Settings24Filled } from '@vicons/fluent'
-import Ai from '@/assets/AI.svg'
+import Ai from '../assets/AI.svg'
 
 // 使用 ref 包裹 icons
 const icons = shallowRef([

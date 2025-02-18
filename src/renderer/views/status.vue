@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import type {ProjectResult} from "../types/TextRequirement";
+import type {ProjectResult} from "../types/TextRequirement.ts";
 const logInstRef = ref<LogInst | null>(null)
 
 import {onMounted, onUnmounted, ref,nextTick} from 'vue'

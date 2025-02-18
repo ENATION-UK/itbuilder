@@ -16,7 +16,8 @@ app.whenReady().then(() => {
   });
 
   if (process.env.NODE_ENV === 'development') {
-    mainWindow.loadURL('http://localhost:3001'); // Vite 开发服务器地址
+    // 开发模式：加载 Vite 服务器
+    mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools(); // 打开开发者工具
   } else {
     mainWindow.loadFile(path.join(__dirname, 'dist/index.html'));

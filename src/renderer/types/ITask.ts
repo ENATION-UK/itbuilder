@@ -1,7 +1,7 @@
 import  { Observable,Subject } from "rxjs";
 import OpenAI from "openai";
 import { ElectronAPI } from '../utils/electron-api.ts';
-import { settings, loadSettings } from '../utils/settings';
+import { settings, loadSettings } from '../utils/settings.ts';
 
 // 定义任务接口
 export interface ITask  {

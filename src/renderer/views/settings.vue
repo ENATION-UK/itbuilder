@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted} from 'vue';
-import { settings, loadSettings, saveSettings } from '../utils/settings';
+import { settings, loadSettings, saveSettings } from '../utils/settings.ts';
 
 const supplierOptions = [
   { label: '阿里云通义千问', value: 'tongyi' },

@@ -231,7 +231,6 @@ const run = () => {
 <style>
 @import '@vue-flow/core/dist/style.css';
 @import '@vue-flow/core/dist/theme-default.css';
-
 .flow-container {
   height: 100vh;
   width: 100%;
