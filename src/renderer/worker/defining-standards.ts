@@ -9,7 +9,7 @@ export class DefiningStandards extends Task {
     }
 
     name(): string {
-        return "规范定义"
+        return this.i18n.t('DefiningStandards.name');
     }
 
     dependencies(): string[] {

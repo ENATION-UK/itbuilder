@@ -20,7 +20,7 @@ onMounted(() => {
 
 </script>
 <template>
-  <n-card title="设置" style="margin-bottom: 16px">
+  <n-card :title="$t('design.name')" style="margin-bottom: 16px">
     <n-tabs type="line" animated>
       <n-tab-pane name="model" tab="模型">
         <n-form>

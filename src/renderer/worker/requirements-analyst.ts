@@ -7,7 +7,7 @@ export class RequirementsAnalyst extends Task {
         return "RequirementsAnalyst"
     }
     name(): string {
-        return "需求分析"
+        return this.i18n.t('RequirementsAnalyst.name');
     }
 
     streamChatTest = async function() {
@@ -32,7 +32,7 @@ export class RequirementsAnalyst extends Task {
                     const userReq = await this.readResult('text-requirement.txt');
                     let sysPrompt = await this.readPrompt('req-analysis.txt');
                     let analysisResult = '';
-
+                    sysPrompt = '# 语种\n 英文'+sysPrompt;
 
                     const response = await this.streamChat(sysPrompt, userReq);
                     for await (const content of response) {

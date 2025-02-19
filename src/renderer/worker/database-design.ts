@@ -8,7 +8,7 @@ export  class DatabaseDesign extends Task {
     }
 
     name(): string {
-        return "数据库设计"
+        return this.i18n.t('DatabaseDesign.name');
     }
 
     dependencies(): string[] {

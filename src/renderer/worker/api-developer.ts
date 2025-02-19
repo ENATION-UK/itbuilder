@@ -10,7 +10,7 @@ export class ApiDeveloper extends Task {
         return "ApiDeveloper"
     }
     name(): string {
-        return "API代码编写"
+        return this.i18n.t('ApiDeveloper.name');
     }
 
     sysPrompt  ='';

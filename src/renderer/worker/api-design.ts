@@ -6,7 +6,8 @@ export class ApiDesign extends Task {
         return "ApiDesign"
     }
     name(): string {
-        return "API架构设计"
+        return this.i18n.t('ApiDesign.name');
+
     }
 
     dependencies(): string[] {

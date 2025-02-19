@@ -1,0 +1,18 @@
+{
+  "settings": "设置",
+  "ApiDesign": {
+    "name": "Api架构设计"
+  },
+  "ApiDeveloper": {
+    "name": "Api代码编写"
+  },
+  "DatabaseDesign": {
+    "name": "数据库设计"
+  },
+  "DefiningStandards": {
+    "name": "规范定义"
+  },
+  "RequirementsAnalyst": {
+    "name": "需求分析"
+  }
+}

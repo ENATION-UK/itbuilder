@@ -2,6 +2,7 @@ import {Observable, Subject} from "rxjs";
 import OpenAI from "openai";
 import {ElectronAPI} from '../utils/electron-api';
 import {loadSettings, settings} from '../utils/settings';
+import { useI18n } from 'vue-i18n';
 
 // 定义任务接口
 export interface ITask  {
@@ -17,7 +18,7 @@ export interface ITask  {
 // 基础任务类
 export abstract class Task implements ITask {
     private client: OpenAI | null = null;
-
+    protected  i18n :useI18n;
     private getClient(): OpenAI {
         if (!this.client) {
             this.client = new OpenAI({
@@ -29,6 +30,10 @@ export abstract class Task implements ITask {
         return this.client;
     }
 
+
+    constructor() {
+        this.i18n = useI18n()
+    }
 
     async readPrompt(promptPath: string): Promise<string> {
         const fullPath = `prompts/${promptPath}`
@@ -114,6 +119,7 @@ export abstract class Task implements ITask {
 
 
     abstract id(): string;
+    abstract name(): string;
 
     protected outputStream = new Subject<string>(); // 用于流式输出
 
@@ -124,4 +130,6 @@ export abstract class Task implements ITask {
     dependencies(): string[] {
         return [];
     }
+
+
 }
