@@ -4,7 +4,7 @@
       <Menu />
     </div>
     <div class="body">
-       <router-view />
+      <router-view />
     </div>
   </div>
 </template>

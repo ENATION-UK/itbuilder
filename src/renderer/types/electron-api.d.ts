@@ -3,7 +3,7 @@ interface ElectronAPI {
     writeAppFile: (filePath: string, content: string) => Promise<string>;
 
     readUserFile: (filePath: string) => Promise<string>;
-    writeUserFile: (filePath: string, content: String | undefined) => Promise<string>;
+    writeUserFile: (filePath: string, content: string | undefined) => Promise<string>;
 
     userFileExists: (filePath: string) => Promise<boolean>;
 

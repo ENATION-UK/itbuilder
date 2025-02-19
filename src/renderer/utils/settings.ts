@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import {ElectronAPI} from "./electron-api.ts";
+import {ElectronAPI} from "./electron-api";
 
 const fileName = 'user-settings.json';
 
@@ -24,6 +24,7 @@ export const settings = reactive<ModelSettings>({ ...defaultSettings });
 export async function loadSettings() {
     try {
         const exists = await ElectronAPI.userFileExists(fileName);
+
         if (!exists) {
             await ElectronAPI.writeUserFile(fileName, JSON.stringify(defaultSettings, null, 2));
             Object.assign(settings, defaultSettings);

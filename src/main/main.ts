@@ -1,42 +1,76 @@
-const { app,ipcMain, BrowserWindow } = require('electron');
+import {app, BrowserWindow, ipcMain} from 'electron';
+import path from 'node:path';
+import started from 'electron-squirrel-startup';
+import fs from "fs";
 
-const path = require('path');
-const fs = require('fs');
+// Handle creating/removing shortcuts on Windows when installing/uninstalling.
+if (started) {
+  app.quit();
+}
 
-let mainWindow;
-
-app.whenReady().then(() => {
-  mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 760,
+const createWindow = () => {
+  // Create the browser window.
+  const mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'), // 可选，预加载文件
-      nodeIntegration: true, // 可视需求调整
-    }
+      preload: path.join(__dirname, 'preload.js'),
+    },
   });
 
-  if (process.env.NODE_ENV === 'development') {
-    // 开发模式：加载 Vite 服务器
-    mainWindow.loadURL('http://localhost:5173');
-    mainWindow.webContents.openDevTools(); // 打开开发者工具
+  // and load the index.html of the app.
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
-    mainWindow.loadFile(path.join(__dirname, 'dist/index.html'));
+    mainWindow.loadFile(path.join(__dirname, `../renderer/index.html`));
   }
 
-});
+  // Open the DevTools.
+  mainWindow.webContents.openDevTools();
+};
 
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', createWindow);
+
+// Quit when all windows are closed, except on macOS. There, it's common
+// for applications and their menu bar to stay active until the user quits
+// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
+app.on('activate', () => {
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
 
+function getAppPath() {
+  const appPath = app.getAppPath();
+  if (process.env.NODE_ENV === 'development') {
+    return appPath;
+  }else {
 
+    // 去掉 app.asar 部分
+      // 如果没有 app.asar 部分，直接使用 appPath
+    return appPath.includes('app.asar')
+        ? appPath.substring(0, appPath.indexOf('app.asar'))
+        : appPath;
+  }
+
+}
 // 获取 app 目录
 ipcMain.handle('get-app-path', () => {
-  return app.getAppPath();
+  return getAppPath();
 });
+
+
 
 // 获取 userData 目录
 ipcMain.handle('get-user-data-path', () => {
@@ -46,7 +80,7 @@ ipcMain.handle('get-user-data-path', () => {
 // 读取 __dirname 下的文件
 ipcMain.handle('read-app-file', async (event, filePath) => {
   try {
-    const appPath = app.getAppPath();
+    const appPath = getAppPath();
     const fullPath = path.join(appPath, filePath);
     return fs.promises.readFile(fullPath, 'utf-8');
   } catch (error) {
@@ -58,7 +92,7 @@ ipcMain.handle('read-app-file', async (event, filePath) => {
 // 写入 __dirname 下的文件
 ipcMain.handle('write-app-file', async (event, filePath, content) => {
   try {
-    const appPath = app.getAppPath();
+    const appPath = getAppPath();
     const fullPath = path.join(appPath, filePath);
     await fs.promises.writeFile(fullPath, content, 'utf-8');
     return '写入成功';

@@ -1,7 +1,7 @@
-import  { Observable,Subject } from "rxjs";
+import {Observable, Subject} from "rxjs";
 import OpenAI from "openai";
-import { ElectronAPI } from '../utils/electron-api.ts';
-import { settings, loadSettings } from '../utils/settings.ts';
+import {ElectronAPI} from '../utils/electron-api';
+import {loadSettings, settings} from '../utils/settings';
 
 // 定义任务接口
 export interface ITask  {
@@ -30,19 +30,16 @@ export abstract class Task implements ITask {
 
 
     async readPrompt(promptPath: string): Promise<string> {
-        let fullPath = `src/prompts/${promptPath}`
-        const content = await ElectronAPI.readAppFile(fullPath);
-        return content;
+        const fullPath = `prompts/${promptPath}`
+        return await ElectronAPI.readAppFile(fullPath);
     }
 
     async readResult(resultPath: string): Promise<string> {
-        const content = await ElectronAPI.readUserFile(resultPath);
-        return content;
+        return await ElectronAPI.readUserFile(resultPath);
     }
 
     async writeResult(resultPath: string, content: string): Promise<string> {
-        const result = await ElectronAPI.writeUserFile(resultPath, content);
-        return result;
+        return await ElectronAPI.writeUserFile(resultPath, content);
     }
 
     protected async *streamChat(sysPrompt: string, userIdea: string): AsyncGenerator<string>{

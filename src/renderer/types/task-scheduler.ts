@@ -1,7 +1,7 @@
 import {forkJoin, merge, mergeMap, Observable, shareReplay} from "rxjs";
-import {ElectronAPI} from "../utils/electron-api.ts";
-import type {ITask} from "./ITask.ts";
-import type {ITaskGraph, TaskNode} from "./ITaskGraph.ts";
+import {ElectronAPI} from "../utils/electron-api";
+import type {ITask} from "./ITask";
+import type {ITaskGraph, TaskNode} from "./ITaskGraph";
 
 export class TaskScheduler {
     private tasks = new Map<string, ITask>();
@@ -25,7 +25,7 @@ export class TaskScheduler {
         try {
             const exists = await ElectronAPI.userFileExists(this.STATUS_FILE);
             if (exists) {
-                let content = await ElectronAPI.readUserFile(this.STATUS_FILE);
+                const content = await ElectronAPI.readUserFile(this.STATUS_FILE);
                 const status: Record<string, string> = JSON.parse(content);
 
                 // 记录已完成的任务
@@ -43,7 +43,7 @@ export class TaskScheduler {
     }
 
     updateNodeStatsu(taskName: string, status: string): void {
-        let taskNode = this.findNode(taskName);
+        const taskNode = this.findNode(taskName);
         if (taskNode) {
             taskNode.data.status = status;
         }
@@ -57,7 +57,7 @@ export class TaskScheduler {
             let taskStatus: Record<string, string> = {};
 
             if (exists) {
-                let content = await ElectronAPI.readUserFile(this.STATUS_FILE);
+                const content = await ElectronAPI.readUserFile(this.STATUS_FILE);
                 taskStatus = JSON.parse(content);
             }
 

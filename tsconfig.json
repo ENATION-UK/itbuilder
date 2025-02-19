@@ -1,7 +1,21 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonjs",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "node_modules/@electron-forge/plugin-vite/forge-vite-env.d.ts",
   ]
+
 }
