@@ -1,15 +1,15 @@
 <script setup lang="ts">
 
-import {TaskScheduler} from '../types/task-scheduler.ts'
+import {TaskScheduler} from '../types/task-scheduler'
 import {Panel, VueFlow, useVueFlow} from "@vue-flow/core";
 import {ref, nextTick} from "vue";
-import {useLayout} from '../utils/useLayout.ts'
+import {useLayout} from '../utils/useLayout'
 
 import Icon from './Icon.vue'
 import TaskNodeView from './task-node.vue'
 
-import type {ITask} from "../types/ITask.ts";
-import type {TaskNode, TaskEdge, ITaskGraph} from "../types/ITaskGraph.ts";
+import type {ITask} from "../types/ITask";
+import type {TaskNode, TaskEdge, ITaskGraph} from "../types/ITaskGraph";
 import {LogInst} from "naive-ui";
 
 const tasks = import.meta.glob('../worker/*.{ts,js}', {eager: true});
@@ -71,7 +71,7 @@ function buildGraph() {
 
   // 创建任务映射
   loadedTasks.forEach((task) => {
-    taskMap.set(task.name(), task);
+    taskMap.set(task.id(), task);
   });
   let taskDes: Map<string, string[]> = optimizeDependencies(taskMap)
   // 计算任务的层级
@@ -94,14 +94,14 @@ function buildGraph() {
     return maxDepLevel + 1;
   }
 
-  loadedTasks.forEach(task => getLevel(task.name()));
+  loadedTasks.forEach(task => getLevel(task.id()));
 
   // 根据层级排序
-  const sortedTasks = [...loadedTasks].sort((a, b) => getLevel(a.name()) - getLevel(b.name()));
+  const sortedTasks = [...loadedTasks].sort((a, b) => getLevel(a.id()) - getLevel(b.id()));
 
   nodes.value = sortedTasks.map((task) => {
     return {
-      id: task.name(),
+      id: task.id(),
       label: task.name(),
       position: {x: 0, y: 0},
       data: {label: task.name(), status: 'wait'},
@@ -116,16 +116,16 @@ function buildGraph() {
 
   edges.value = sortedTasks.flatMap((task) =>
       task.dependencies()
-          .filter(dep => taskDes.get(task.name())?.includes(dep))
+          .filter(dep => taskDes.get(task.id())?.includes(dep))
           .filter(dep => taskMap.has(dep))
           .map(dep => {
-            const edgeId = `${dep}-${task.name()}`;
+            const edgeId = `${dep}-${task.id()}`;
             if (edgeSet.has(edgeId)) return null;  // 避免重复边
             edgeSet.add(edgeId);
             return {
-              id: `edge-${dep}-${task.name()}`,
+              id: `edge-${dep}-${task.id()}`,
               source: dep,
-              target: task.name(),
+              target: task.id(),
               markerEnd: "arrowclosed", // 终点箭头
               // animated: true, // **流动效果（可选）**
 

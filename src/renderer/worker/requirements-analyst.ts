@@ -1,13 +1,16 @@
-import { Task } from "../types/ITask.ts";
+import { Task } from "../types/ITask";
 import {  Observable } from "rxjs";
 
 
 export class RequirementsAnalyst extends Task {
-    name(): string {
+    id(): string {
         return "RequirementsAnalyst"
     }
+    name(): string {
+        return "需求分析"
+    }
 
-     streamChatTest = async function() {
+    streamChatTest = async function() {
         // 模拟异步操作，比如网络请求
         return new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -26,12 +29,12 @@ export class RequirementsAnalyst extends Task {
                     // let response = await this.streamChatTest();
                     // console.log(response);
                     //
-                    let userReq = await this.readResult('text-requirement.txt');
+                    const userReq = await this.readResult('text-requirement.txt');
                     let sysPrompt = await this.readPrompt('req-analysis.txt');
                     let analysisResult = '';
 
 
-                    let response = await this.streamChat(sysPrompt, userReq);
+                    const response = await this.streamChat(sysPrompt, userReq);
                     for await (const content of response) {
                         analysisResult += content;
                         observer.next(content);
@@ -44,7 +47,7 @@ export class RequirementsAnalyst extends Task {
                     sysPrompt = await this.readPrompt('req-to-json.txt');
                     const jsonResult = await this.chat(sysPrompt, analysisResult);
 
-                    let reqJson = this.extractCode(jsonResult);
+                    const reqJson = this.extractCode(jsonResult);
                     await this.writeResult('req-json.txt', reqJson);
 
                     observer.complete();

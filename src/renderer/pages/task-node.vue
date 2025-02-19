@@ -1,5 +1,4 @@
 <script setup>
-import { computed, toRef } from 'vue'
 import {Handle} from "@vue-flow/core";
 
 

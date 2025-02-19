@@ -1,11 +1,15 @@
-import {Task} from "../types/ITask.ts";
+import {Task} from "../types/ITask";
 import {Observable} from "rxjs";
 
 export class DefiningStandards extends Task {
 
 
-    name(): string {
+    id(): string {
         return "DefiningStandards"
+    }
+
+    name(): string {
+        return "规范定义"
     }
 
     dependencies(): string[] {
@@ -21,12 +25,12 @@ export class DefiningStandards extends Task {
 
                     observer.next("\n开始规范定义");
 
-                    let sysPrompt = await this.readPrompt('standard.txt');
-                    let requirement = await this.readResult('req-analysis.txt');
+                    const sysPrompt = await this.readPrompt('standard.txt');
+                    const requirement = await this.readResult('req-analysis.txt');
 
                     let standardResult = '';
 
-                    let response = await this.streamChat(sysPrompt, requirement);
+                    const response = await this.streamChat(sysPrompt, requirement);
 
                     for await (const content of response) {
                         standardResult += content;

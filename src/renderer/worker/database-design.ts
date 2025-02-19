@@ -1,12 +1,15 @@
-import { Task } from "../types/ITask.ts";
+import { Task } from "../types/ITask";
 import {  Observable } from "rxjs";
 
 export  class DatabaseDesign extends Task {
 
-    name(): string {
+    id(): string {
         return "DatabaseDesign"
     }
 
+    name(): string {
+        return "数据库设计"
+    }
 
     dependencies(): string[] {
         return ['RequirementsAnalyst']
@@ -22,14 +25,14 @@ export  class DatabaseDesign extends Task {
 
 
                     //数据库设计提示词
-                    let sysPrompt = await this.readPrompt('database-design.txt');
+                    const sysPrompt = await this.readPrompt('database-design.txt');
 
                     //需求分析结果
-                    let reqAnalysis = await this.readResult('req-analysis.txt');
+                    const reqAnalysis = await this.readResult('req-analysis.txt');
                     let ddlResult = '';
 
                     //通过ai获取数据库设计结果
-                    let response = await this.streamChat(sysPrompt,reqAnalysis);
+                    const response = await this.streamChat(sysPrompt,reqAnalysis);
 
                     for await (const content of response) {
                         ddlResult += content;
@@ -37,7 +40,7 @@ export  class DatabaseDesign extends Task {
                     }
 
                     //写入数据库设计结果
-                    let sqlJson = this.extractCode(ddlResult);
+                    const sqlJson = this.extractCode(ddlResult);
                     await this.writeResult('ddl.txt',sqlJson);
                     observer.next("\n数据库设计完成");
                     observer.complete();

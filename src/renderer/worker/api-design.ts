@@ -1,9 +1,12 @@
-import {Task} from "../types/ITask.ts";
+import {Task} from "../types/ITask";
 import {Observable} from "rxjs";
 
 export class ApiDesign extends Task {
-    name(): string {
+    id(): string {
         return "ApiDesign"
+    }
+    name(): string {
+        return "API架构设计"
     }
 
     dependencies(): string[] {
@@ -19,14 +22,14 @@ export class ApiDesign extends Task {
 
                     observer.next("\n开始API设计");
 
-                    let sysPrompt = await this.readPrompt('api-design.txt');
-                    let ddl = await this.readResult('ddl.txt');
-                    let requirement = await this.readResult('req-analysis.txt');
+                    const sysPrompt = await this.readPrompt('api-design.txt');
+                    const ddl = await this.readResult('ddl.txt');
+                    const requirement = await this.readResult('req-analysis.txt');
 
                     let apiResult = '';
-                    let  userInput = requirement+ "\n # 数据库结构\n" + ddl;
+                    const  userInput = requirement+ "\n # 数据库结构\n" + ddl;
 
-                    let response = await this.streamChat(sysPrompt, userInput);
+                    const response = await this.streamChat(sysPrompt, userInput);
 
                     for await (const content of response) {
                         apiResult += content;

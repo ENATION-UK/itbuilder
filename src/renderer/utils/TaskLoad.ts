@@ -33,7 +33,7 @@ export function optimizeTaskMap(taskMap: Map<string, ITask>): Map<string, string
     const optimizedMap = new Map<string, string[]>();
 
     taskMap.forEach((task) => {
-        const taskName = task.name();
+        const taskName = task.id();
         const allDeps = getAllDependencies(taskName);
 
         // 从间接依赖中移除直接依赖

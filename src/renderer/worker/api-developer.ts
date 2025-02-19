@@ -1,15 +1,22 @@
-import {Task} from "../types/ITask.ts";
+import {Task} from "../types/ITask";
 import {Observable} from "rxjs";
+// eslint-disable-next-line import/no-unresolved
 import {Subscriber} from "rxjs/internal/Subscriber";
-import {Module} from "../types/Module.ts";
-import {ModuleFunction} from "../types/Module.ts";
+import {Module,ModuleFunction} from "../types/Module";
 
 export class ApiDeveloper extends Task {
 
-    sysPrompt : string ='';
-    ddl: string='';
-    apiDesign: string='';
-    standard: string='';
+    id(): string {
+        return "ApiDeveloper"
+    }
+    name(): string {
+        return "API代码编写"
+    }
+
+    sysPrompt  ='';
+    ddl='';
+    apiDesign='';
+    standard='';
 
 
 
@@ -21,9 +28,7 @@ export class ApiDeveloper extends Task {
         this.standard = await this.readResult('standard.txt');
     }
 
-    name(): string {
-        return "ApiDeveloper"
-    }
+
 
     dependencies(): string[] {
         return ['RequirementsAnalyst','DefiningStandards', 'DatabaseDesign']
@@ -40,7 +45,7 @@ export class ApiDeveloper extends Task {
 
                     this.init();
 
-                    let requirement = await this.readResult('req-json.txt');
+                    const requirement = await this.readResult('req-json.txt');
                     const jsonData = JSON.parse(requirement); // 先解析 JSON 字符串
 
                     const modules: Module[] = jsonData.map((m: any) =>
@@ -89,7 +94,7 @@ export class ApiDeveloper extends Task {
         prompt += `\n\n# 数据库结构 \n${this.ddl}`;
 
 
-        let response = await this.streamChat(this.sysPrompt, prompt);
+        const response = await this.streamChat(this.sysPrompt, prompt);
         let codeResult = '';
         for await (const content of response) {
             codeResult += content;

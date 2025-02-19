@@ -5,6 +5,7 @@ import {loadSettings, settings} from '../utils/settings';
 
 // 定义任务接口
 export interface ITask  {
+    id(): string;
     name(): string;
     execute(): Observable<string>;
     dependencies(): string[];
@@ -112,7 +113,7 @@ export abstract class Task implements ITask {
     }
 
 
-    abstract name(): string;
+    abstract id(): string;
 
     protected outputStream = new Subject<string>(); // 用于流式输出
 

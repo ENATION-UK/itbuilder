@@ -11,7 +11,7 @@ export class TaskScheduler {
     private taskGraph: ITaskGraph;
 
     constructor(tasks: ITask[], taskGraph: ITaskGraph) {
-        tasks.forEach(task => this.tasks.set(task.name(), task));
+        tasks.forEach(task => this.tasks.set(task.id(), task));
         this.taskGraph = taskGraph;
     }
 
@@ -73,7 +73,7 @@ export class TaskScheduler {
          const executionObservables: Observable<{ name: string; output: string }>[] = [];
 
         this.tasks.forEach(task => {
-            if (!this.completedTasks.has(task.name())) {
+            if (!this.completedTasks.has(task.id())) {
                 executionObservables.push(this.executeTask(task)); // 只执行未完成的任务
             }
         });
@@ -83,11 +83,11 @@ export class TaskScheduler {
 
     // 执行单个任务
     private executeTask(task: ITask): Observable<{ name: string; output: string }> {
-        if (this.taskResults.has(task.name())) {
-            return this.taskResults.get(task.name())!;
+        if (this.taskResults.has(task.id())) {
+            return this.taskResults.get(task.id())!;
         }
 
-        this.updateNodeStatsu(task.name(), "running")
+        this.updateNodeStatsu(task.id(), "running")
 
         let execution$: Observable<{ name: string; output: string }>;
 
@@ -95,15 +95,15 @@ export class TaskScheduler {
             // 依赖已完成，执行本任务
             execution$ = new Observable(observer => {
                 task.execute().subscribe({
-                    next: output => observer.next({name: task.name(), output}),
+                    next: output => observer.next({name: task.id(), output}),
                     complete: async () => {
-                        this.completedTasks.add(task.name());
-                        await this.saveTaskStatus(task.name(), "completed");
+                        this.completedTasks.add(task.id());
+                        await this.saveTaskStatus(task.id(), "completed");
                         observer.complete();
                     },
                     error: async err => {
-                        console.error(`Task ${task.name()} failed:`, err);
-                        await this.saveTaskStatus(task.name(), "failed");
+                        console.error(`Task ${task.id()} failed:`, err);
+                        await this.saveTaskStatus(task.id(), "failed");
                     }
                 });
             }).pipe(shareReplay(1));  // 让 Observable 变成热的;
@@ -117,15 +117,15 @@ export class TaskScheduler {
                 mergeMap(() =>
                     new Observable<{ name: string; output: string }>(observer => {
                         task.execute().subscribe({
-                            next: output => observer.next({name: task.name(), output}),
+                            next: output => observer.next({name: task.id(), output}),
                             complete: async () => {
-                                this.completedTasks.add(task.name());
-                                await this.saveTaskStatus(task.name(), "completed");
+                                this.completedTasks.add(task.id());
+                                await this.saveTaskStatus(task.id(), "completed");
                                 observer.complete();
                             },
                             error: async err => {
-                                console.error(`Task ${task.name()} failed:`, err);
-                                await this.saveTaskStatus(task.name(), "failed");
+                                console.error(`Task ${task.id()} failed:`, err);
+                                await this.saveTaskStatus(task.id(), "failed");
                             }
                         });
                     })
@@ -133,7 +133,7 @@ export class TaskScheduler {
             ).pipe(shareReplay(1));
         }
 
-        this.taskResults.set(task.name(), execution$);
+        this.taskResults.set(task.id(), execution$);
         return execution$;
     }
 }
