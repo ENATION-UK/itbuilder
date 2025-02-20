@@ -24,7 +24,7 @@ import Ai from '../assets/AI.svg'
 // 使用 ref 包裹 icons
 const icons = shallowRef([
   { component: Ai, route: '/ai', active: false },
-  { component: DocumentOnePage20Regular, route: '/test', active: false },
+  { component: DocumentOnePage20Regular, route: '/play', active: false },
   { component: Code20Regular, route: '/about', active: false },
   { component: Code20Regular, route: '/status', active: false },
   { component: Window16Regular, route: '/play/ui', active: false },

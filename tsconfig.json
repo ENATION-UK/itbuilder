@@ -15,7 +15,9 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.vue",
-    "node_modules/@electron-forge/plugin-vite/forge-vite-env.d.ts",
+    "src/tests/**/*.ts",
+    "src/tests/**/*.tsx",
+    "node_modules/@electron-forge/plugin-vite/forge-vite-env.d.ts"
   ]
 
 }

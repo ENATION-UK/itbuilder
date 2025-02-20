@@ -4,21 +4,11 @@ import {ElectronAPI} from '../utils/electron-api';
 import {loadSettings, settings} from '../utils/settings';
 import { useI18n } from 'vue-i18n';
 
-// 定义任务接口
-export interface ITask  {
-    id(): string;
-    name(): string;
-    execute(): Observable<string>;
-    dependencies(): string[];
-
-}
-
-
 
 // 基础任务类
 export abstract class Task implements ITask {
     private client: OpenAI | null = null;
-    protected  i18n :useI18n;
+    protected i18n = useI18n();
     private getClient(): OpenAI {
         if (!this.client) {
             this.client = new OpenAI({
@@ -31,9 +21,7 @@ export abstract class Task implements ITask {
     }
 
 
-    constructor() {
-        this.i18n = useI18n()
-    }
+
 
     async readPrompt(promptPath: string): Promise<string> {
         const fullPath = `prompts/${promptPath}`

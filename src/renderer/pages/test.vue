@@ -8,11 +8,10 @@ import {useLayout} from '../utils/useLayout'
 import Icon from './Icon.vue'
 import TaskNodeView from './task-node.vue'
 
-import type {ITask} from "../types/ITask";
 import type {TaskNode, TaskEdge, ITaskGraph} from "../types/ITaskGraph";
 import {LogInst} from "naive-ui";
 
-const tasks = import.meta.glob('../worker/*.{ts,js}', {eager: true});
+const tasks = import.meta.glob('../tasks/*.{ts,js}', {eager: true});
 
 const nodes = ref<TaskNode[]>([]);
 const edges = ref<TaskEdge>([]);

@@ -1,6 +1,5 @@
 import {forkJoin, merge, mergeMap, Observable, shareReplay} from "rxjs";
 import {ElectronAPI} from "../utils/electron-api";
-import type {ITask} from "./ITask";
 import type {ITaskGraph, TaskNode} from "./ITaskGraph";
 
 export class TaskScheduler {

@@ -14,5 +14,23 @@
   },
   "RequirementsAnalyst": {
     "name": "需求分析"
+  },
+  "PageDesign": {
+    "name": "页面设计"
+  },
+  "FlowCreator": {
+    "name": "流程图生成"
+  },
+  "MindCreator": {
+    "name": "脑图生成"
+  },
+  "UISourceWriter": {
+    "name": "UI代码写入"
+  },
+  "ApiSourceWriter": {
+    "name": "API代码写入"
+  },
+  "ApiSourceMerge": {
+    "name": "API代码合并"
   }
 }

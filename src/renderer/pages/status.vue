@@ -56,8 +56,7 @@ const logInstRef = ref<LogInst | null>(null)
 
 import {onMounted, onUnmounted, ref,nextTick} from 'vue'
 import type {LogInst} from "naive-ui";
-import type {ITask} from "../types/ITask.ts";
-import {TaskScheduler} from "../types/task-scheduler.ts";
+import {TaskScheduler} from "../types/task-scheduler";
 const tasks = import.meta.glob('../worker/*.{ts,js}', { eager: true });
 
 // 创建响应式变量

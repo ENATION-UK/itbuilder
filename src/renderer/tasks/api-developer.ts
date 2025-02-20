@@ -23,6 +23,7 @@ export class ApiDeveloper extends Task {
 
     init: () => void = async () => {
         this.sysPrompt = await this.readPrompt('api-dev.txt');
+        //这里输出不为空
         this.ddl = await this.readResult('ddl.txt');
         this.apiDesign = await this.readResult('api-design.txt');
         this.standard = await this.readResult('standard.txt');
@@ -31,7 +32,7 @@ export class ApiDeveloper extends Task {
 
 
     dependencies(): string[] {
-        return ['RequirementsAnalyst','DefiningStandards', 'DatabaseDesign']
+        return ['RequirementsAnalyst','DefiningStandards', 'DatabaseDesign', 'ApiDesign']
     }
 
 
@@ -43,10 +44,10 @@ export class ApiDeveloper extends Task {
 
                     observer.next("\n开始API代码编写");
 
-                    this.init();
-
+                    await this.init();
+                    //这里输出为空
                     const requirement = await this.readResult('req-json.txt');
-                    const jsonData = JSON.parse(requirement); // 先解析 JSON 字符串
+                    const jsonData = JSON.parse(requirement);
 
                     const modules: Module[] = jsonData.map((m: any) =>
                         new Module(
@@ -105,9 +106,4 @@ export class ApiDeveloper extends Task {
         await this.writeResult("api/"+moduleName+"/api-" + functionName +  ".txt", codeResult);
 
     }
-
-
-
-
-
 }

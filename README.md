@@ -38,7 +38,6 @@ yarn package
 ```
 
 2.	Create a release package:
-3.	
 ```bash
 yarn make
 ```

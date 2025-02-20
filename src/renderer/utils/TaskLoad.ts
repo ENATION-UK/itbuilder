@@ -1,5 +1,3 @@
-import type {ITask} from "../types/ITask.ts";
-
 export function optimizeTaskMap(taskMap: Map<string, ITask>): Map<string, string[]> {
     // 用一个缓存对象存储每个任务的优化后依赖关系
     const optimizedDepsCache = new Map<string, Set<string>>();
