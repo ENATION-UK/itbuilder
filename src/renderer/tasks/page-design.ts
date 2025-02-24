@@ -41,7 +41,7 @@ export class PageDesign extends Task {
 
                     const jsonResponse = await this.chat(jsonSysPrompt, pageResult);
 
-                    jsonText =this.extractCode(jsonResponse);
+                    jsonText = await this.extractCode(jsonResponse);
 
                     await this.writeResult('page-to-json.txt', jsonText);
 

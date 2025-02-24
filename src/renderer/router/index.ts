@@ -1,12 +1,31 @@
-import {createRouter, createWebHashHistory} from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: [
     {
       path: '/',
       name: 'home',
       component: () => import('../pages/home.vue'),
+    },
+    {
+      path: '/project/:name',
+      name: 'project',
+      component: () => import('../pages/project.vue'),
+      children: [
+        {
+          path: 'ai/',
+          name: 'ai',
+          component: () => import('../components/ai.vue'),
+          props:true
+        },
+        {
+          path: 'flow/:id',
+          name: 'project-flow',
+          component: () => import('../pages/flow.vue'),
+          props:true
+        }
+      ]
     },
     {
       path: '/play',
@@ -27,11 +46,6 @@ const router = createRouter({
       path: '/settings',
       name: 'settings',
       component: () => import('../pages/settings.vue'),
-    },
-    {
-      path: '/ai',
-      name: 'ai',
-      component: () => import('../components/ai.vue'),
     }
   ]
 })

@@ -1,13 +1,15 @@
 import {Observable, Subject} from "rxjs";
-import OpenAI from "openai";
+import {OpenAI} from "openai";
 import {ElectronAPI} from '../utils/electron-api';
 import {loadSettings, settings} from '../utils/settings';
-import { useI18n } from 'vue-i18n';
+import {useI18n} from 'vue-i18n';
+import * as console from "node:console";
 
 
 // 基础任务类
 export abstract class Task implements ITask {
     private client: OpenAI | null = null;
+    protected requirement: Requirement | null = null;
     protected i18n = useI18n();
     private getClient(): OpenAI {
         if (!this.client) {
@@ -20,7 +22,9 @@ export abstract class Task implements ITask {
         return this.client;
     }
 
-
+    setRequirement(requirement: Requirement): void {
+        this.requirement = requirement;
+    }
 
 
     async readPrompt(promptPath: string): Promise<string> {
@@ -29,10 +33,12 @@ export abstract class Task implements ITask {
     }
 
     async readResult(resultPath: string): Promise<string> {
+        resultPath=await ElectronAPI.pathJoin(this.requirement.projectName, this.requirement.id, resultPath)
         return await ElectronAPI.readUserFile(resultPath);
     }
 
     async writeResult(resultPath: string, content: string): Promise<string> {
+        resultPath=await ElectronAPI.pathJoin(this.requirement.projectName, this.requirement.id, resultPath)
         return await ElectronAPI.writeUserFile(resultPath, content);
     }
 
@@ -69,7 +75,7 @@ export abstract class Task implements ITask {
     }
 
 
-    protected extractCode(str: string | null): string {
+    protected async extractCode(str: string | null): Promise<string> {
         if (!str) {
             return '';
         }
@@ -78,8 +84,22 @@ export abstract class Task implements ITask {
 
         // 正则匹配 ``` 包裹的代码
         const match = str.match(/```[\r\n]?([\s\S]*?)```/);
+        let reqJson = match ? match[1].trim() : str;
+        reqJson = await this.jsonFix(reqJson)
+        return reqJson
+    }
 
-        return match ? match[1].trim() : str;
+    protected async jsonFix(json: string): Promise<string> {
+
+        try {
+            JSON.parse(json);
+            return json;
+        } catch (error) {
+            const sysPrompt = await this.readPrompt("json-fix.txt")
+            json = await this.innerChat(sysPrompt, json)
+            return json;
+        }
+
     }
 
     private async innerChat(sysPrompt: string, userIdea: string): Promise<string | null> {
@@ -100,6 +120,9 @@ export abstract class Task implements ITask {
 
         return chatCompletion.choices[0].message.content;
     }
+
+
+
 
     protected temperature(): number {
         return 1.99;

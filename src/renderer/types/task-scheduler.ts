@@ -8,9 +8,14 @@ export class TaskScheduler {
     private completedTasks = new Set<string>(); // 存储已完成任务
     private readonly STATUS_FILE = "status.json";
     private taskGraph: ITaskGraph;
+    private requirement: Requirement;
 
-    constructor(tasks: ITask[], taskGraph: ITaskGraph) {
-        tasks.forEach(task => this.tasks.set(task.id(), task));
+    constructor(requirement: Requirement, tasks: ITask[], taskGraph: ITaskGraph) {
+        this.requirement = requirement;
+        tasks.forEach(task => {
+            task.setRequirement(requirement)
+            this.tasks.set(task.id(), task)
+        });
         this.taskGraph = taskGraph;
     }
 
@@ -22,15 +27,17 @@ export class TaskScheduler {
     // 加载任务状态
     async loadTaskStatus(): Promise<void> {
         try {
-            const exists = await ElectronAPI.userFileExists(this.STATUS_FILE);
+            const filePath = await this.statusFile();
+
+            const exists = await ElectronAPI.userFileExists(filePath);
             if (exists) {
-                const content = await ElectronAPI.readUserFile(this.STATUS_FILE);
+                const content = await ElectronAPI.readUserFile(filePath);
                 const status: Record<string, string> = JSON.parse(content);
 
                 // 记录已完成的任务
                 for (const [taskName, state] of Object.entries(status)) {
 
-                    this.updateNodeStatsu(taskName, state);
+                    this.updateNodeStatus(taskName, state);
                     if (state === "completed") {
                         this.completedTasks.add(taskName);
                     }
@@ -41,27 +48,33 @@ export class TaskScheduler {
         }
     }
 
-    updateNodeStatsu(taskName: string, status: string): void {
+    updateNodeStatus(taskName: string, status: string): void {
         const taskNode = this.findNode(taskName);
         if (taskNode) {
             taskNode.data.status = status;
         }
     }
+
+    private async statusFile():Promise<string>{
+        return await ElectronAPI.pathJoin(this.requirement.projectName, this.requirement.id, this.STATUS_FILE);
+    }
+
     // 保存任务状态
     async saveTaskStatus(taskName: string, status: string): Promise<void> {
         try {
-            this.updateNodeStatsu(taskName, status);
+            this.updateNodeStatus(taskName, status);
 
-            const exists = await ElectronAPI.userFileExists(this.STATUS_FILE);
+            const exists = await ElectronAPI.userFileExists(await this.statusFile());
             let taskStatus: Record<string, string> = {};
 
             if (exists) {
-                const content = await ElectronAPI.readUserFile(this.STATUS_FILE);
+                const content = await ElectronAPI.readUserFile( await this.statusFile());
                 taskStatus = JSON.parse(content);
             }
 
             taskStatus[taskName] = status; // 更新任务状态
-            await ElectronAPI.writeUserFile(this.STATUS_FILE, JSON.stringify(taskStatus, null, 2));
+            const filePath = await this.statusFile()
+            await ElectronAPI.writeUserFile(filePath, JSON.stringify(taskStatus, null, 2));
         } catch (err) {
             console.error("Error saving task status:", err);
         }
@@ -69,7 +82,7 @@ export class TaskScheduler {
 
     // 执行所有任务（跳过已完成的任务）
     async run(): Promise<Observable<{ name: string; output: string }>> {
-         const executionObservables: Observable<{ name: string; output: string }>[] = [];
+        const executionObservables: Observable<{ name: string; output: string }>[] = [];
 
         this.tasks.forEach(task => {
             if (!this.completedTasks.has(task.id())) {
@@ -82,15 +95,19 @@ export class TaskScheduler {
 
     // 执行单个任务
     private executeTask(task: ITask): Observable<{ name: string; output: string }> {
+
         if (this.taskResults.has(task.id())) {
             return this.taskResults.get(task.id())!;
         }
 
-        this.updateNodeStatsu(task.id(), "running")
+        this.updateNodeStatus(task.id(), "running")
+        console.log(`执行 ${task.id()}: running`);
 
         let execution$: Observable<{ name: string; output: string }>;
 
         if (task.dependencies().every(dep => this.completedTasks.has(dep))) {
+            console.log(` ${task.id()}所以依赖都已完成`);
+
             // 依赖已完成，执行本任务
             execution$ = new Observable(observer => {
                 task.execute().subscribe({
@@ -107,9 +124,10 @@ export class TaskScheduler {
                 });
             }).pipe(shareReplay(1));  // 让 Observable 变成热的;
         } else {
+            console.log(` ${task.id()} 依赖未完成，先执行依赖`);
             // 先执行所有依赖，再执行本任务
             const dependencies$: Observable<{ name: string; output: string }[]> = forkJoin(
-                task.dependencies().map(depName => this.executeTask(this.tasks.get(depName)!))
+                task.dependencies().filter(depName => !this.completedTasks.has(depName)).map(depName => this.executeTask(this.tasks.get(depName)!))
             );
 
             execution$ = dependencies$.pipe(

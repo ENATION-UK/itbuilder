@@ -47,7 +47,8 @@ export class RequirementsAnalyst extends Task {
                     sysPrompt = await this.readPrompt('req-to-json.txt');
                     const jsonResult = await this.chat(sysPrompt, analysisResult);
 
-                    const reqJson = this.extractCode(jsonResult);
+                    const reqJson = await this.extractCode(jsonResult);
+
                     await this.writeResult('req-json.txt', reqJson);
 
                     observer.complete();

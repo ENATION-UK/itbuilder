@@ -5,9 +5,14 @@
 </template>
 <script setup lang="ts">
 
-import { UISourceWriter } from '../tasks/ui-source-writer'
-const  apiDeveloper = new UISourceWriter();
+import { ApiSourceWriter } from '../tasks/api-source-writer'
+const  apiDeveloper = new ApiSourceWriter();
+const requirement: Requirement = {
+  projectName: 'test',
+  id: '3'
+};
 
+apiDeveloper.setRequirement(requirement)
 const run = () => {
       apiDeveloper.execute().subscribe({
         next: output => console.log(output),

@@ -35,7 +35,7 @@ export class MindCreator extends Task {
                     }
 
                     // 假设jsonExtract是一个用于从字符串中提取JSON的函数
-                    const text = this.extractCode(mindResult);  // 这里直接解析成JSON对象
+                    const text =  await this.extractCode(mindResult);  // 这里直接解析成JSON对象
 
                     await this.writeResult('mind.txt', text);
 

@@ -10,4 +10,17 @@ declare interface ITask  {
     name(): string;
     execute(): Observable<string>;
     dependencies(): string[];
+    setRequirement(requirement: Requirement):void;
+}
+
+declare interface Project{
+    name: string;
+    requirement: string;
+    framework: string[];
+
+}
+
+declare interface Requirement{
+    projectName: string;
+    id: string;
 }

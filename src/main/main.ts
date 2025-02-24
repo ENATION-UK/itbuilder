@@ -121,7 +121,7 @@ ipcMain.handle('read-file', async (event, fullPath) => {
 ipcMain.handle('read-user-file', async (event, filePath) => {
     try {
         const userDataPath = app.getPath('userData');
-        const fullPath = path.join(userDataPath, 'project', filePath);
+        const fullPath =path.join(userDataPath, 'Projects', filePath);
         return fs.promises.readFile(fullPath, 'utf-8');
     } catch (error) {
         console.error('读取 userData 目录文件失败:', error);
@@ -133,7 +133,7 @@ ipcMain.handle('read-user-file', async (event, filePath) => {
 ipcMain.handle('write-user-file', async (event, filePath, content) => {
     try {
         const userDataPath = app.getPath('userData');
-        const fullPath = path.join(userDataPath, 'project', filePath);
+        const fullPath = path.join(userDataPath, 'Projects', filePath);
         // 确保目录存在
         const dir = path.dirname(fullPath);
         await fs.promises.mkdir(dir, {recursive: true});
@@ -149,7 +149,7 @@ ipcMain.handle('write-user-file', async (event, filePath, content) => {
 ipcMain.handle('list-user-folder', async (event, folderPath: string) => {
     try {
         const userDataPath = app.getPath('userData'); // 获取用户数据目录路径
-        const targetPath = path.join(userDataPath, 'project', folderPath); // 拼接目标文件夹路径
+        const targetPath = path.join(userDataPath, 'Projects', folderPath); // 拼接目标文件夹路径
 
         // 读取目标文件夹下的文件
         const files = fs.readdirSync(targetPath);
@@ -177,7 +177,7 @@ ipcMain.handle('list-user-folder', async (event, folderPath: string) => {
 ipcMain.handle('user-file-exists', async (event, filePath) => {
     try {
         const userDataPath = app.getPath('userData');
-        const fullPath = path.join(userDataPath, 'project', filePath);
+        const fullPath = path.join(userDataPath, 'Projects', filePath);
         return fs.promises.access(fullPath, fs.constants.F_OK)
             .then(() => true)
             .catch(() => false);

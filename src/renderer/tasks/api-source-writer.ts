@@ -27,7 +27,8 @@ export class ApiSourceWriter extends Task {
                     const sysPrompt = await this.readPrompt('api-source.txt');
                     const projectStructure = await this.readResult('standard.txt');
 
-                    const files = await ElectronAPI.listUserFolder("api");
+                    const apiPath = await ElectronAPI.pathJoin(this.requirement.projectName,this.requirement.id,"api");
+                    const files = await ElectronAPI.listUserFolder(apiPath);
 
 
                     for (const module of files) {
@@ -35,18 +36,17 @@ export class ApiSourceWriter extends Task {
                             continue;
                         }
 
-                        if (module.name != 'Security') {
-                            continue;
-                        }
                         observer.next(`\n开始写入[${module.name}]`);
-                        const mergeFilePath = await ElectronAPI.pathJoin('api', module.name, 'merge.txt')
+
+                        const mergeFilePath = await ElectronAPI.pathJoin(apiPath, module.name, 'merge.txt')
 
                         try {
 
                             if (await ElectronAPI.userFileExists(mergeFilePath)) {
-                                await this.write(sysPrompt, projectStructure, mergeFilePath,observer);
+                                await this.write(sysPrompt, projectStructure, module.name,observer);
                             }
                         } catch (e) {
+                            console.error(e)
                             observer.error(`写入[${module.name}]出错`);
                         }
 
@@ -62,15 +62,16 @@ export class ApiSourceWriter extends Task {
     }
 
 
-    private async write(sysPrompt: string, projectStructure: string, mergeFilePath: string, observer: Subscriber<string>) {
+    private async write(sysPrompt: string, projectStructure: string, moduleName: string, observer: Subscriber<string>) {
 
+            const mergeFilePath = await ElectronAPI.pathJoin("api", moduleName, 'merge.txt')
             const allCode = await this.readResult(mergeFilePath);
             const userInput = `${allCode}\n # 工程结构：\n${projectStructure}`;
             const response = await this.chat(sysPrompt, userInput);
 
 
 
-            const jsonText = this.extractCode(response);
+            const jsonText = await this.extractCode(response);
 
 
             const jsonArray: FileContent[]  = JSON.parse(jsonText);

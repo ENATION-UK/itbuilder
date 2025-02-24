@@ -40,7 +40,7 @@ export  class DatabaseDesign extends Task {
                     }
 
                     //写入数据库设计结果
-                    const sqlJson = this.extractCode(ddlResult);
+                    const sqlJson =  await this.extractCode(ddlResult);
                     await this.writeResult('ddl.txt',sqlJson);
                     observer.next("\n数据库设计完成");
                     observer.complete();

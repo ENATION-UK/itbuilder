@@ -2,7 +2,7 @@
 
 import {TaskScheduler} from '../types/task-scheduler'
 import {Panel, VueFlow, useVueFlow} from "@vue-flow/core";
-import {ref, nextTick} from "vue";
+import {ref, nextTick, defineProps} from "vue";
 import {useLayout} from '../utils/useLayout'
 
 import Icon from './Icon.vue'
@@ -10,6 +10,7 @@ import TaskNodeView from './task-node.vue'
 
 import type {TaskNode, TaskEdge, ITaskGraph} from "../types/ITaskGraph";
 import {LogInst} from "naive-ui";
+import { useRoute } from 'vue-router';
 
 const tasks = import.meta.glob('../tasks/*.{ts,js}', {eager: true});
 
@@ -19,6 +20,12 @@ const edges = ref<TaskEdge>([]);
 const logVisible = ref(false);
 const {onNodeClick} = useVueFlow();
 const logInstRef = ref<LogInst | null>(null)
+
+const props = defineProps<{
+  name: string;
+  id: string; //需求id
+}>();
+
 
 function optimizeDependencies(taskMap: Map<string, ITask>): Map<string, string[]> {
   const optimizedMap = new Map<string, string[]>();
@@ -157,8 +164,13 @@ let taskGraph: ITaskGraph = {
   nodes: nodes.value,
   edges: edges.value
 }
+const route = useRoute();
+const requirement: Requirement = {
+  projectName: props.name,
+  id: props.id
+};
 
-const scheduler = new TaskScheduler(loadedTasks, taskGraph);
+const scheduler = new TaskScheduler(requirement,loadedTasks, taskGraph);
 scheduler.loadTaskStatus()
 
 const selectedLogs = ref<string>('');

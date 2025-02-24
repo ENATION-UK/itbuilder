@@ -19,6 +19,7 @@
 import {ref, shallowRef, watchEffect} from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Code20Regular, Window16Regular, DocumentOnePage20Regular,Settings24Filled } from '@vicons/fluent'
+import { ArrowBackCircle } from '@vicons/ionicons5'
 import Ai from '../assets/AI.svg'
 
 // 使用 ref 包裹 icons
@@ -30,6 +31,7 @@ const icons = shallowRef([
   { component: Window16Regular, route: '/play/ui', active: false },
   { component: DocumentOnePage20Regular, route: '/play/doc', active: false },
   { component: Settings24Filled, route: '/settings', active: false },
+  { component: ArrowBackCircle, route: '/', active: false },
 ])
 
 // 路由管理

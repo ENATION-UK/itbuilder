@@ -25,8 +25,8 @@ export class ApiSourceMerge extends Task {
                     observer.next("\n开始代码合并");
 
                     const sysPrompt = await this.readPrompt('file-merge.txt');
-
-                    const modules = await ElectronAPI.listUserFolder("api")
+                    const apiFolder = await ElectronAPI.pathJoin(this.requirement.projectName, this.requirement.id,"api");
+                    const modules = await ElectronAPI.listUserFolder(apiFolder)
 
                     for (const module of modules) {
 
@@ -34,7 +34,7 @@ export class ApiSourceMerge extends Task {
                             continue
                         }
 
-                        const modulePath = await ElectronAPI.pathJoin("api", module.name);
+                        const modulePath = await ElectronAPI.pathJoin(this.requirement.projectName, this.requirement.id,"api", module.name);
                         const files = await ElectronAPI.listUserFolder(modulePath);
 
                         try {
