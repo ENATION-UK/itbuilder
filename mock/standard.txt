@@ -1,0 +1,40 @@
+```
+com/
+├── commerce/            # 商城系统包
+│   ├── service/        # 核心服务层（面向接口编程，便于维护和单元测试）
+│   │   ├── goods/     # 商品管理服务
+│   │   │   └── GoodsService.java       # 商品业务逻辑处理类，如查询商品详情等方法定义
+│   │   ├── order/     # 订单管理服务
+│   │   │   └── OrderService.java        # 订单相关服务接口及其默认实现类 
+│   │   ├── member/    # 用户服务包含会员管理和会员权限设置
+│   │   │   ├── MemberLoginOrRegisterService.java   # 实现用户登录注册等认证鉴权服务功能
+│   │   │   └── UserRankManagementService.java      # 负责不同等级的会员信息的创建、修改等功能的方法集合  
+│   │   └── marketing/# 营销推广活动配置服务    
+│   │       ├── PromotionEventService.java         # 比如秒杀团购促销等活动的相关数据处理方法定义   
+│   │       └── CouponDistributionService.java    # 有关优惠券生成、分配以及使用的操作定义     
+│   ├── controller/    # 控制层接收前端请求并将参数传递给对应的Servicexxx进行下一步业务处理返回结果到视图
+│   │   ├── webGoodsController.java                 # 商品展示控制器，与goods服务层交互用于页面展示
+│   │   ├── MemberCenterController.java            # 用户个人中心界面访问处理函数
+│   │   └── PromotionActivityController.java     # 所有的促销类活动页面交互逻辑均在此处完成        
+│   ├── repository/     # 数据存储层，负责对象到数据库记录的映射，包括实体对象定义
+│   │   ├── domain/    # 包含实体对象定义文件，对应数据库表结构，并利用@TableName注解指定映射关系       
+│   │   │   ├── Goods.java                    # 商品属性信息的描述性类
+│   │   │   ├── MemberEntity.java                  # 注释了成员身份验证所需的所有字段的Bean类
+│   │   │   ├── OrderRecord.java             # 有关用户购买下单的一张表的数据抽象化表达形式
+│   │   │   ├── PromotionDetail.java         # 各类营销活动详细说明文档所涉及的信息组织方式      
+│   │   │   └── VoucherItem.java              # 保存优惠券条目细节的一个实例化的Java Bean类型
+│   │   └── mapper/                       # 接口，内部方法与具体的持久层操作语句挂钩，供mybatis-plus框架扫描以构建映射关系 
+│   │       ├── IMemberDetailsMapper.java                # 提供给mapper扫描使用的Mapper接口文件，在这个文件中有对于所有member表的CRUD操作方法声明
+│   │       ├── ProductCategoryDao.java                   # 定义商品类别DAO组件
+│   │       └── MarketingStrategyMap.java               # 封装了一系列与market表有关的映射策略的抽象表示类型
+│   ├── dto/                  # 表现层之间传输对象DTO，为确保表现层不受实体变动影响。避免暴露太多实体信息并添加自定义格式的数据转换器
+│   │   ├── ResponseDataWrapper.java         # 对响应数据进行封装的对象模板，统一格式化后的数据结构
+│   │   ├── GoodsViewTransferDTO.java           # 用来自前端表单或者URL请求参数的商品视图模型
+│   │   └── MemberLevelTransfer.java          # 传输层级信息的媒介，在controller和服务调用中作为临时参数存在
+│   └── config/            # 系统全局性的配置项都存放于此处；涉及到第三方工具接入的应用凭证也保存于内以确保安全性和可配置性
+│       ├── DataSouresConfiguration.java         # 主从分离读写库等关于连接池的一些设定都在这进行集中式的维护配置    
+│       ├── SpringSecuritySettingConfig.class     # 用户账户权限保护相关的Spring Security规则定义在这里          
+│       ├── JwtTokenProviderSetting.java          # JWT令牌提供者选项及算法私钥等相关内容被置于此类别之中           
+│       └── RedisCacheExpirationPolicySetup.yaml     # 缓存策略以及针对Redis存储时过期间隔等规则设置文件格式采用的是YAML语法书写下来  
+└── application.yml   # 应用程序核心配置属性列表，如端口号和一些环境依赖的变量等关键资源定位符
+```

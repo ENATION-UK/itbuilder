@@ -1,0 +1,437 @@
+```java
+package com.commerce.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.commerce.common.constant.AuthConstant;
+import com.commerce.common.dto.UserLoginDTO;
+import com.commerce.common.enums.ErrorCodeEnum;
+import com.commerce.common.exception.BaseException;
+import com.commerce.common.exception.BusinessException;
+import com.commerce.common.response.RestResult;
+import com.commerce.common.util.CommonAssert;
+import com.commerce.common.util.PageUtil;
+import com.commerce.config.security.TokenGeneratorUtil;
+import com.commerce.dto.MemberLevelTransfer;
+import com.commerce.dto.MemberProfileDTO;
+import com.commerce.exception.ErrorMessageEnums;
+import com.commerce.repository.domain.MemberEntity;
+import com.commerce.repository.domain.MemberLevel;
+import com.commerce.repository.domain.PointRecord;
+import com.commerce.repository.mapper.IMemberDetailsMapper;
+import com.commerce.repository.mapper.IMemberLevelMapper;
+import com.commerce.service.member.MemberCenterModification;
+import com.commerce.service.member.UserRankManagementService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Nonnull;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+@RestController
+@RequestMapping("/member-center")
+@Api(tags = "会员中心控制器")
+@RequiredArgsConstructor
+@Slf4j
+public class MemberCenterController {
+
+    private final MemberCenterModification memberCenterService;
+    private final UserRankManagementService userRankService;
+    private final IMemberDetailsMapper userRepo;
+    private final PasswordEncryptionUtils passwordEncryptor;
+
+    /**
+     * 更新或保存个人信息 
+     * @param userId 当前登录用户的id
+     * @param profile 待修改或者提交的新资料信息封装体
+     * @return 处理完成后的响应状态码和描述性的消息文本。
+     */
+    @PutMapping("/profile/{userId}")
+    public RestResult<?> updateMemberProfile(@PathVariable Integer userId,
+                                               @RequestBody MemberProfileDTO profile) {
+        try {
+            // 校验身份是否为合法用户，此处简化了身份验证过程
+            if (!checkUserAuth(userId)) throw new BusinessException("Invalid User!");
+            
+            boolean updatedFlag = memberCenterService.updateMemberBasicProfile(profile, userId);
+        
+            return RestResult.ok()
+                .message(updatedFlag ? "Updated Successfully." : "Nothing Changed.")
+                .data(null);
+
+        } catch (BusinessException ex){
+            // 异常情况下构造带有异常信息的对象作为返回值的一部分给客户端看
+            return RestResult.failed(ex.getMessage());
+        }
+    }
+
+    private boolean checkUserAuth(Integer id){ //模拟鉴权方法实现略...
+        return true;  
+    }
+
+    /**
+     * 获取个人积分明细分页数据
+     */
+    @GetMapping("/points")
+    @ApiOperation(value="获取带分页的个人积分明细", responseContainer=Page.class)
+    @ApiImplicitParams({
+      @ApiImplicitParam(dataType="Integer",name="pageNum",defaultValue="1",value="当前期望取得第几页"),
+      @ApiImplicitParam(dataType="Integer",name="pageSize",defaultValue="10",value="单页内包含的最大记录数量")}
+      )
+    public RestResult<Page<MemberPointInfoTransfer>> fetchPersonalPointsByPager(
+            @RequestParam(required = false) String username, 
+            @RequestParam(required = false) Integer pageNum, 
+            @RequestParam(required = false) Integer pageSize) throws BusinessException {
+        Page<PointRecord> rawPage = userRepo.fetchAllPointChangesByOwner(username, pageNum != null && pageNum > 0 ? pageNum : 1, 
+                                                                   pageSize != null && pageSize > 0 ? pageSize : 50);
+
+         List<PointChangeDetailDto> dtosConvertedFromDbRecords= PointChangeConvertTool.toDTOList(rawPage.getRecords());
+
+        Long currentMemberLevelCode=-99;
+         Optional<Integer> mayBeHighestEarnedPts=null;
+         
+         int countTotalRows=rawPage.getRecords().size();
+    
+         return RestResult.ok(Page.of(dtosConvertedFromDbRecords.stream().map(PointChangeDetail -> new MemberPointInfoTransfer(PointChangeDetail,
+                            getLevelBadgeDescription(currentMemberLevelCode, mayBeHighestEarnedPts),
+                            String.format("(总共找到%s条变更记录)",countTotalRows).getBytes(StandardCharsets.UTF_8)))
+                             .collect(Collectors.toList()), pageNum !=null?pageNum:0,pageSize!=null?pageSize:50, countTotalRows));
+    }
+
+    /**
+      * 获取用户的累计积分并确定对应的最高获得层级标志。
+      */
+    private Byte[] getLevelBadgeDescription(int curMemLevelId,long maxAchievePts){
+          /*省略...*/
+
+        MemberLevel levelDescriptionObj = userRankService.queryLevelInfoByIdentifier(curMemLevelId);    
+         String benefitExplanation = Objects.nonNull(levelDescriptionObj)?
+                                    StringUtils.trimToEmpty(levelDescriptionObj.getBenefit()):"";
+
+        log.info("Fetched level name:{}, benefits{}", curMemLevelId,benefitExplanation );
+         
+    
+        // 注意这里的编码格式必须设置正确以防止特殊符号显示不完整问题
+       StandardCharsets.UTF_8.encode(benefitExplanation);
+      
+   }
+
+    /**
+     * 验证第三方用户是否已绑定，未绑定则直接进行关联操作，绑定过的用户执行登录检查逻辑
+     *
+     * @param openId 第三方唯一ID
+     * @return 登录后的用户实体信息以及JWT token字符串形式结果集
+     */
+    @PostMapping("/third-party-binding")
+    public RestResult<?> thirdPartyBindingProcess(String openId) {
+        log.info("third party binding process for OPENID={}",openId);
+        Map<String, Object> resultMap = new HashMap<>(16);
+        
+        QueryWrapper<MemberEntity> memberConditionBuilder=new QueryWrapper<>();
+        memberConditionBuilder.eq("third_party_id",openId);
+        List<MemberEntity> foundList=userRepo.selectList(memberConditionBuilder);
+        if (!CollectionUtils.isEmpty(foundList)) { // 存在即表示该外部用户已完成初次授权绑定
+            String issuedJwtTokenForThisUser= issueJWTToBindExistingAccount(openId);  // 获取对应内部系统的认证令牌 
+            populateLoginResults(resultMap,foundList.get(0));
+            return RestResult.ok().putAll(resultMap);
+        } else { 
+            MemberEntity newcomerRecord=new RegisterThirdAccountInstance();
+            resultMap.put("first_time_bind_flag",Boolean.TRUE);
+            generateTemporaryVisitorProfileAndReturnResult(newcomerRecord,resultMap);
+        }
+       
+        resultMap.computeIfAbsent("success",(a)->Boolean.FALSE);
+        throw new BaseException(ErrorMessageEnums.INTERNAL_ERROR,null);
+
+        // TODO: 考虑如何处理第一次访问的游客模式创建临时资料的情况
+    }
+
+    protected void populateLoginResults(Map<String,?> resultMap,MemberEntity user) {
+        JSONObject loginUserDetail=new JSONObject(
+           JSON.toJSONStringWithDateFormat(user,
+              LocalDate.now()
+                    .toString()
+                    .replaceAll("\\..*",
+                        "").replace("T", " ")
+        );
+        loginUserDetail.remove("PASSWORD_HASH");
+        resultMap.put(AuthConstant.JWT_PAYLOAD_CLAIM,loginUserDetail);
+        resultMap.put(AuthConstant.JWT_PAYLOAD_FIELD,issueToken(loginUserDetail));
+        resultMap.put("user_info",loginUserDetail);
+
+    }
+     
+    /**
+     * 用户注册接口。
+     */
+   @Transactional(rollbackFor = Throwable.class)
+    @PostMapping("/register")
+    public RestResult<?> handleLocalUserRegister(@RequestBody UserLoginDTO dto, @RequestParam(defaultValue = "true") boolean isNew){
+         if(!isNew){
+               validateDuplicateEntry(dto.getUserName());
+         }
+
+          MemberEntity toBeAdded=getUserInfoReadyToInsert(dto.getUserName());
+
+          executeDatabaseOperationsWithExceptionHandle(dto.getPassword(),
+          getInsertedEntity()->{toBeAdded.setPasswordHash(this.hashingPassword(password))
+          .setRegisterDate(LocalDate.now())
+          .setNickname(generateSystemDefaultNickName())
+          .save();},
+          Exception::getMessage
+          );
+
+         this.addNewbiePointGrantingRules(toBeAdded);
+
+      return RestResult.ok().message("注册成功").put("token", getFirstVisitToken(toBeAdded).getJwtToken());
+
+}
+
+// More utility methods and implementations go here...
+
+}
+```
+
+### DTO Transfer Tool Class
+```java
+class PointChangeConvertTool { 
+    // 将持久化层获取的数据转换为表现层可接受的格式...
+}
+```
+
+### MemberLevel 实体类
+```java
+package com.commerce.repository.domain;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
+@TableName("MemberLevel")
+public class MemberLevel extends BaseTable {
+   
+   /** 等级编码 */
+   private Integer levelId;
+
+   /** 会员名称或称呼 */
+   private String name;
+
+   /** 所需累积购物额 */
+   private Double requirePoint;
+
+   /** 可享有优惠或其他福利 */
+   private String benefitDesc;
+
+}
+```
+
+### BaseTable 父类
+```java
+package com.commerce.repository.domain;
+
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor(staticName="of")
+public class BaseTable {
+
+   @TableField(fill = FieldFill.INSERT_UPDATE, exist = false)
+   private Long createTimestamp;
+
+ }
+```
+
+### Mapper接口 IMemberLevelMapper
+```java
+package com.commerce.repository.mapper;
+
+import com.commerce.repository.domain.MemberLevel;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+* 持久化接口，用于封装MyBatis对于member_level这张表格的各种增删查改等CRUD方法声明
+*/
+@Mapper
+public interface IMemberLevelMapper extends BaseMapper<MemberLevel> {
+
+}
+```
+
+### UserRankManagementService 接口
+```java
+package com.commerce.service.member;
+
+import com.commerce.repository.domain.MemberLevel;
+import com.baomidou.mybatisplus.extension.service.IService;
+
+/**
+ * 会员等级相关业务逻辑处理接口
+ */
+public interface UserRankManagementService extends IService<MemberLevel> {
+    
+    // 自定义方法：根据会员积分找到最匹配的等级信息（升序排列取符合条件的第一条记录）
+    MemberLevel findMatchLevelByPoints(int points);
+
+}
+```
+
+### UserRankManagementServiceImpl 实现类
+```java
+package com.commerce.service.impl.member;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.commerce.repository.domain.MemberLevel;
+import com.commerce.repository.mapper.MemberLevelMapper;
+import com.commerce.service.member.UserRankManagementService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
+
+/**
+ * {@link MemberLevel}实体表的操作实现
+ *
+ * @author assistant
+ * @date 创建日期: ${date.now()}
+ */
+@Service
+public class UserRankManagementServiceImpl extends ServiceImpl<MemberLevelMapper, MemberLevel>
+        implements UserRankManagementService {
+
+    /**
+     * 根据积分查找适合当前用户的会员等级.
+     * 注意此算法按照等级最低所需累积分数从小到大排序，选择第一个满足条件者即为当前应分配给用户的会员等级。
+     */
+    @Override
+    public MemberLevel findMatchLevelByPoints(int points) {
+        QueryWrapper<MemberLevel> condition = new QueryWrapper<>();
+        condition.gt("require_point", points)
+                 .orderByAsc("require_point");
+        return getBaseMapper().selectOne(condition);
+    }
+
+}
+```
+
+### AdminMemberLevelController 控制器
+```java
+package com.commerce.controller.admin;
+
+import com.commerce.common.response.RestResult;
+import com.commerce.common.util.PageUtil;
+import com.commerce.repository.domain.MemberLevel;
+import com.commerce.service.member.UserRankManagementService;
+import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/admin/memberLevels")
+@Api(tags = "后台 - 会员等级控制器")
+@CrossOrigin(maxAge = 3600)  //允许跨域请求，正式部署时应当调整该配置以增强安全性
+public class AdminMemberLevelController {
+
+    final UserRankManagementService rankManagementService;
+
+    public AdminMemberLevelController(UserRankManagementService rankManagementService) {
+        this.rankManagementService = rankManagementService;
+    }
+
+    /**
+      * 新增或编辑单个会员等级
+     */
+    @PostMapping("/{id:\\d+}?")
+    @ApiOperation(value="新增或修改特定ID的会员级别配置", notes="需要提交完整参数列表才能确保更改无误，请勿缺少任何一个必填字段")
+    public RestResult<?> updateOrCreateLevel(@Validated @RequestBody MemberLevel updatedEntity,@PathVariable(value="id") Integer optionalObjectId){
+         try{
+             if (optionalObjectId==null || optionalObjectId<=0 ) { 
+               // 若是传过来NULL或是非正常范围内的值都认为是要新建记录
+               this.rankManagementService.save(updatedEntity);  //直接插入一条新的纪录
+               return RestResult.ok().message("创建成功！");
+             }else {
+                // 正常情况下则是更新现有实体内容
+               boolean result=rankManagementService.updateById(updatedEntity);
+               return (result?RestResult.ok().message("更新成功"):RestResult.error("内部错误"));  
+            }
+          }catch(Exception e){
+            return RestResult.failed("操作失败: ".concat(e.getMessage()));
+          }
+     }
+     
+      /**
+       * 删除指定ID所代表的一行会员资料表单中的数据.
+       */
+      @DeleteMapping("/{identifier}")
+      @ApiOperation("根据主键移除具体某一行会员层级的数据项.")
+      @ApiImplicitParam(name = "identifier", value = "目标会员等级唯一识别符号", paramType = "path", required = true, dataType = "long", example = "582")
+      public RestResult<Void> destroySingleEntry(@PathVariable Long identifier) {
+          if (!this.rankManagementService.removeById(identifier)) {
+              return RestResult.error("指定对象不存在！");
+          }
+          return RestResult.success();  /* 理想情况反馈状态OK即可 */
+      }   
+      
+    /**
+     * 获取符合筛选标准的所有记录。
+     */
+    @GetMapping
+    @ApiOperation(value="获取带分页的全表视图" ,responseContainer=Page.class)
+    @ApiImplicitParams({
+      @ApiImplicitParam(dataType="Integer",name="pageNumber",defaultValue="1",value="当前期望取得第几页"),
+      @ApiImplicitParam(dataType="Integer",name="sizePerPage",defaultValue="10",value="单页内包含的最大记录数量")}
+      )
+    public RestResult<Page<MemberLevel>> paginate(@RequestParam int pageNumber,@RequestParam int sizePerPage){
+        Page<MemberLevel> paging =Page.of(pageNumber, sizePerPage);
+        rankManagementService.list(new QueryWrapper<MemberLevel>().orderByAsc("require_point")) .fill(paging);
+        return RestResult.ok().put("page", paging);
+    }
+    
+      
+   /**
+   * 利用用户积分计算并返回其所在最高可达层级以及对应享受的权利.
+   */      
+  @PutMapping("/calculateHighestReachableRank/{points:.+?\\d}")       
+  public RestResult<?> calHighestRank(@PathVariable("points") Double givenAmountOfPurchaseCredit) 
+  throws RuntimeException{            
+           Optional<Object[]> fetchedPairOfBestAvailableGrade= Optional.of(
+                     rankManagementService.findMatchLevelByPoints((givenAmountOfPurchaseCredit.intValue()))) .map(r->new Object[]{r,r.getRequirePoint()});
+                  Map<String, ?> formattedOutputMap=fetchedPairOfBestAvailableGrade.map(arr -> Map.entry("等级",arr[0]),(entry)->{
+                          entry.getKey()->entry.getValue(),
+                    });
+                    
+              // 责任链判断输出
+            return fetchedPairOfBestAvailableGrade.isPresent()&&Objects.requireNonNull(fetchedPairOfBestAvailableGrade.get())[1] <=givenAmountOfPurchaseCredit
+                       ? RestResult.ok().put("data", formattedOutputMap)  
+                        : RestResult.error("用户积攒金额不够");                
+     }
+
+}
+```
+
+以上代码将所有功能点合并到了一个文件中，并保持了原有的注释和逻辑结构。请根据实际需求进一步调整和完善代码。

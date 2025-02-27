@@ -61,12 +61,12 @@ const goToGenerate = async () => {
   // await ElectronAPI.writeUserFile(filePath, detailRef.value); // 保存需求内容
 
 
-  await router.push(`/project/${props.name}/flow/3`)
+  await router.push(`/project/${props.name}/generation/3`)
 }
 
 // 获取下一个需求序号并创建对应的文件夹
 const getNextRequirementDir = async () => {
-  const folderList = await ElectronAPI.listUserFolder(props.name);
+  const folderList = await ElectronAPI.listUserFolder(props.name+"/generation");
   const sortedDirs = folderList
       .filter(file => file.type === 'directory') // 过滤出文件夹
       .map(file => parseInt(file.name)) // 获取文件夹名并转换为数字

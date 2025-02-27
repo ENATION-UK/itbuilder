@@ -5,7 +5,7 @@ const fileName = 'user-settings.json';
 
 export interface ModelSettings {
     supplierSelected: string | null;
-    apiKey: string;
+    apiKey: string[];
     apiUrl: string;
     modelName: string | null;
     maxToken: string;
@@ -13,7 +13,7 @@ export interface ModelSettings {
 
 const defaultSettings: ModelSettings = {
     supplierSelected: null,
-    apiKey: '',
+    apiKey: [],
     apiUrl: '',
     modelName: null,
     maxToken: '',
@@ -33,6 +33,7 @@ export async function loadSettings() {
         const content = await ElectronAPI.readUserFile(fileName);
         const parsed = JSON.parse(content);
         Object.assign(settings, parsed);
+        console.log('setting load success')
     } catch (error) {
         console.warn('Failed to load settings:', error);
     }

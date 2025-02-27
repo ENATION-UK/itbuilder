@@ -1,25 +1,19 @@
 import {Observable, Subject} from "rxjs";
-import {OpenAI} from "openai";
 import {ElectronAPI} from '../utils/electron-api';
-import {loadSettings, settings} from '../utils/settings';
+import {settings} from '../utils/settings';
 import {useI18n} from 'vue-i18n';
 import * as console from "node:console";
-
+import {KeyManager} from '../utils/KeyManager'
 
 // 基础任务类
 export abstract class Task implements ITask {
-    private client: OpenAI | null = null;
     protected requirement: Requirement | null = null;
+    private keyManager: KeyManager;
+
     protected i18n = useI18n();
-    private getClient(): OpenAI {
-        if (!this.client) {
-            this.client = new OpenAI({
-                apiKey: settings.apiKey || "",
-                baseURL: settings.apiUrl || "https://api.openai.com/v1",
-                dangerouslyAllowBrowser: true,
-            });
-        }
-        return this.client;
+
+    constructor() {
+        this.keyManager = new KeyManager(settings.apiKey);
     }
 
     setRequirement(requirement: Requirement): void {
@@ -33,22 +27,23 @@ export abstract class Task implements ITask {
     }
 
     async readResult(resultPath: string): Promise<string> {
-        resultPath=await ElectronAPI.pathJoin(this.requirement.projectName, this.requirement.id, resultPath)
+        resultPath=await ElectronAPI.pathJoin(this.requirement.projectName,"generation", this.requirement.id, resultPath)
         return await ElectronAPI.readUserFile(resultPath);
     }
 
     async writeResult(resultPath: string, content: string): Promise<string> {
-        resultPath=await ElectronAPI.pathJoin(this.requirement.projectName, this.requirement.id, resultPath)
+        resultPath=await ElectronAPI.pathJoin(this.requirement.projectName,"generation", this.requirement.id, resultPath)
         return await ElectronAPI.writeUserFile(resultPath, content);
     }
 
-    protected async *streamChat(sysPrompt: string, userIdea: string): AsyncGenerator<string>{
-        await loadSettings(); // 确保 settings 加载完成
-        const client = this.getClient();
+    protected async *streamChat(sysPrompt: string, userIdea: string): AsyncGenerator<string> {
+
+        const { client, release } = await this.keyManager.getClient();
+
         const chatCompletion = await client.chat.completions.create({
             messages: [
-                {role: 'system', content: sysPrompt},
-                {role: 'user', content: userIdea}
+                { role: 'system', content: sysPrompt },
+                { role: 'user', content: userIdea }
             ],
             model: settings.modelName,
             max_tokens: parseInt(settings.maxToken) || 2000,
@@ -56,20 +51,24 @@ export abstract class Task implements ITask {
             stream: true
         });
 
-        for await (const chunk of chatCompletion) {
-            const content = chunk.choices[0]?.delta?.content;
-            if (content) {
-                yield content; // 逐步产出数据
+        try {
+            for await (const chunk of chatCompletion) {
+                const content = chunk.choices[0]?.delta?.content;
+                if (content) {
+                    yield content; // 逐步产出数据
+                }
             }
+        } finally {
+            release(); // 确保释放信号量
         }
     }
+
 
     public async chat(sysPrompt: string, userIdea: string): Promise<string | null> {
         try {
             return await this.innerChat(sysPrompt, userIdea);
         } catch (e) {
-            console.error("====chat error : =====\n\n", e);
-            // 重试一次
+             // 重试一次
             return await this.innerChat(sysPrompt, userIdea);
         }
     }
@@ -79,14 +78,13 @@ export abstract class Task implements ITask {
         if (!str) {
             return '';
         }
+        str = await this.jsonFix(str)
         // 先去掉特定的代码标识，如 ```json, ```sql, ```mermaid
         str = str.replace(/```(json|sql|mermaid)/g, "```");
 
         // 正则匹配 ``` 包裹的代码
         const match = str.match(/```[\r\n]?([\s\S]*?)```/);
-        let reqJson = match ? match[1].trim() : str;
-        reqJson = await this.jsonFix(reqJson)
-        return reqJson
+        return match ? match[1].trim() : str
     }
 
     protected async jsonFix(json: string): Promise<string> {
@@ -102,25 +100,33 @@ export abstract class Task implements ITask {
 
     }
 
-    private async innerChat(sysPrompt: string, userIdea: string): Promise<string | null> {
-
-        await loadSettings(); // 确保 settings 加载完成
-        const client = this.getClient();
-
-        const chatCompletion = await client.chat.completions.create({
-            messages: [
-                {role: 'system', content: sysPrompt},
-                {role: 'user', content: userIdea}
-            ],
-            model: settings.modelName,
-            max_tokens: parseInt(settings.maxToken) || 2000,
-            // model: 'deepseek-reasoner',
-            temperature: this.temperature(),
-        });
-
-        return chatCompletion.choices[0].message.content;
+    protected async codeAnalyst(code:string): Promise<FunctionInfo>{
+        const sysPrompt = await this.readPrompt("code-analyst.txt");
+        let jsonText =  await this.innerChat(sysPrompt, code);
+        jsonText = await this.extractCode(jsonText);
+        return JSON.parse(jsonText);
     }
 
+// 在 Task 类中
+    private async innerChat(sysPrompt: string, userIdea: string): Promise<string | null> {
+        const { client, release } = await this.keyManager.getClient(); // 获取客户端，并控制并发
+
+        try {
+            const chatCompletion = await client.chat.completions.create({
+                messages: [
+                    { role: 'system', content: sysPrompt },
+                    { role: 'user', content: userIdea }
+                ],
+                model: settings.modelName,
+                max_tokens: parseInt(settings.maxToken) || 2000,
+                temperature: this.temperature(),
+            });
+
+            return chatCompletion.choices[0]?.message?.content || null; // 返回生成的内容
+        } finally {
+            release(); // 确保释放信号量
+        }
+    }
 
 
 

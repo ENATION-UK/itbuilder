@@ -24,3 +24,14 @@ declare interface Requirement{
     projectName: string;
     id: string;
 }
+
+interface FunctionInfo {
+    path: string;
+    description: string;
+    functions: string[];
+}
+
+interface ModuleInfo {
+    moduleName: string;
+    codes: FunctionInfo[];
+}

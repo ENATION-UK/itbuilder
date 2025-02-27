@@ -47,6 +47,8 @@ export class UISourceWriter extends Task {
                     }
 
                     observer.next("\nUI源文件创建完成");
+                    observer.complete();
+
 
                 } catch (error) {
                     observer.error("UI源文件创建过程中出错");

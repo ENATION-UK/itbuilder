@@ -44,6 +44,7 @@ import {onMounted, ref} from 'vue';
 import {NCard, NButton, NDialog, NInput, NSpace} from 'naive-ui';
 import {ElectronAPI} from '../utils/electron-api';
 import { useRouter } from 'vue-router'
+import {loadSettings} from "../utils/settings";
 const projects = ref([]);
 const createProjectDialogVisible = ref(false);
 const newProjectName = ref('');
@@ -58,7 +59,9 @@ const fetchProjects = async () => {
     for (const file of files) {
       if (file.type === 'directory') {
         const detailFilePath = `${file.name}/detail.json`;
-
+        if (!await ElectronAPI.userFileExists(detailFilePath)) {
+          continue;
+        }
         const projectDetail = await ElectronAPI.readUserFile(detailFilePath);
         const project = JSON.parse(projectDetail);
 
@@ -119,6 +122,8 @@ const createProject = async () => {
 };
 
 onMounted(async () => {
+  await loadSettings(); // 确保 settings 加载完成
+
   // 初始化项目列表
   await fetchProjects();
 });

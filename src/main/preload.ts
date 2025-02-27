@@ -1,4 +1,5 @@
 import {contextBridge, ipcRenderer} from "electron";
+import {loadSettings} from "../renderer/utils/settings";
 
 contextBridge.exposeInMainWorld('electronAPI', {
     //直接读取某文件
@@ -27,3 +28,4 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
     pathJoin: (...paths: string[]) => ipcRenderer.invoke('path-join', ...paths),
 });
+

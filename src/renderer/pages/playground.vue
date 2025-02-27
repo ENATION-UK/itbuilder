@@ -6,11 +6,14 @@
 <script setup lang="ts">
 
 import { ApiSourceWriter } from '../tasks/api-source-writer'
+import { main } from '../utils/ToolsTest'
+import {ElectronAPI} from "../utils/electron-api";
 const  apiDeveloper = new ApiSourceWriter();
 const requirement: Requirement = {
   projectName: 'test',
   id: '3'
 };
+
 
 apiDeveloper.setRequirement(requirement)
 const run = () => {

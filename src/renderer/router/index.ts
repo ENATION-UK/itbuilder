@@ -20,9 +20,9 @@ const router = createRouter({
           props:true
         },
         {
-          path: 'flow/:id',
-          name: 'project-flow',
-          component: () => import('../pages/flow.vue'),
+          path: 'generation/:id',
+          name: 'project-generation',
+          component: () => import('../pages/generation.vue'),
           props:true
         }
       ]

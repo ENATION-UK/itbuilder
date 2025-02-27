@@ -56,7 +56,7 @@ export class TaskScheduler {
     }
 
     private async statusFile():Promise<string>{
-        return await ElectronAPI.pathJoin(this.requirement.projectName, this.requirement.id, this.STATUS_FILE);
+        return await ElectronAPI.pathJoin(this.requirement.projectName,"generation", this.requirement.id, this.STATUS_FILE);
     }
 
     // 保存任务状态
