@@ -12,7 +12,7 @@ export class UISourceWriter extends Task {
         return "UISourceWriter"
     }
     name(): string {
-        return this.i18n.t('UISourceWriter.name');
+        return this.translate('UISourceWriter.name');
     }
 
     dependencies(): string[] {
@@ -63,7 +63,7 @@ export class UISourceWriter extends Task {
     private async write(sysPrompt: string, moduleName: string, page: Page,observer: Subscriber<string>): Promise<void> {
         const prompt = `# ${page.pageName}:\n## 功能说明\n${page.functionDescription}\n## 布局及元素\n${page.pageItem}\n## 操作体验\n${page.userInteraction}\n## 风格\n${page.style}`;
 
-        const response = await this.streamChat(sysPrompt, prompt);
+        const response = await streamChat(sysPrompt, prompt);
 
         let apiResult = '';
         for await (const content of response) {

@@ -1,5 +1,6 @@
 import { Task } from "../types/ITask";
 import {  Observable } from "rxjs";
+import {streamChat} from "../utils/ModelCall";
 
 export  class DatabaseDesign extends Task {
 
@@ -8,7 +9,7 @@ export  class DatabaseDesign extends Task {
     }
 
     name(): string {
-        return this.i18n.t('DatabaseDesign.name');
+        return this.translate('DatabaseDesign.name');
     }
 
     dependencies(): string[] {
@@ -32,7 +33,7 @@ export  class DatabaseDesign extends Task {
                     let ddlResult = '';
 
                     //通过ai获取数据库设计结果
-                    const response = await this.streamChat(sysPrompt,reqAnalysis);
+                    const response = await streamChat(sysPrompt,reqAnalysis);
 
                     for await (const content of response) {
                         ddlResult += content;

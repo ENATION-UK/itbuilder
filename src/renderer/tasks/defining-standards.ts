@@ -1,5 +1,6 @@
 import {Task} from "../types/ITask";
 import {Observable} from "rxjs";
+import {streamChat} from "../utils/ModelCall";
 
 export class DefiningStandards extends Task {
 
@@ -9,7 +10,7 @@ export class DefiningStandards extends Task {
     }
 
     name(): string {
-        return this.i18n.t('DefiningStandards.name');
+        return this.translate('DefiningStandards.name');
     }
 
     dependencies(): string[] {
@@ -30,7 +31,7 @@ export class DefiningStandards extends Task {
 
                     let standardResult = '';
 
-                    const response = await this.streamChat(sysPrompt, requirement);
+                    const response = await streamChat(sysPrompt, requirement);
 
                     for await (const content of response) {
                         standardResult += content;

@@ -19,7 +19,7 @@
             </div>
             <div class="input-button">
               <n-button size="large" color="#8a2be2" @click="goToGenerate" :disabled="!detailRef">
-                开始生成
+                去生成
               </n-button>
             </div>
 
@@ -56,12 +56,12 @@ const props = defineProps<{
 const router = useRouter()
 const goToGenerate = async () => {
 
-  // const nextSeq = await getNextRequirementDir(); // 获取下一个需求目录
-  // const filePath = await ElectronAPI.pathJoin(props.name,  nextSeq.toString(), 'text-requirement.txt'); // 获取需求文件路径
-  // await ElectronAPI.writeUserFile(filePath, detailRef.value); // 保存需求内容
+  const nextSeq = await getNextRequirementDir(); // 获取下一个需求目录
+  const filePath = await ElectronAPI.pathJoin(props.name,"generation",  nextSeq.toString(), 'text-requirement.txt'); // 获取需求文件路径
+  await ElectronAPI.writeUserFile(filePath, detailRef.value); // 保存需求内容
 
 
-  await router.push(`/project/${props.name}/generation/3`)
+  await router.push(`/project/${props.name}/generation/${nextSeq}`)
 }
 
 // 获取下一个需求序号并创建对应的文件夹

@@ -1,5 +1,6 @@
 import {Observable} from 'rxjs';
 import {Task} from "../types/ITask";
+import {streamChat} from "../utils/ModelCall";
 
 export class PageDesign extends Task {
     id(): string {
@@ -7,7 +8,7 @@ export class PageDesign extends Task {
     }
 
     name(): string {
-        return this.i18n.t('PageDesign.name');
+        return this.translate('PageDesign.name');
     }
 
     dependencies(): string[] {
@@ -25,7 +26,7 @@ export class PageDesign extends Task {
                     const sysPrompt = await this.readPrompt('page-design.txt');
 
                     let pageResult = '';
-                    const response = await this.streamChat(sysPrompt, requirement);
+                    const response = await streamChat(sysPrompt, requirement);
 
                     for await (const content of response) {
                         pageResult += content;
@@ -39,7 +40,7 @@ export class PageDesign extends Task {
                     const jsonSysPrompt = await this.readPrompt('page-to-json.txt');
                     let jsonText = '';
 
-                    const jsonResponse = await this.chat(jsonSysPrompt, pageResult);
+                    const jsonResponse = await chat(jsonSysPrompt, pageResult);
 
                     jsonText = await this.extractCode(jsonResponse);
 

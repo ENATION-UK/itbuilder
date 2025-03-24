@@ -2,6 +2,7 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import fs from "fs";
+import { spawn } from "child_process";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -134,6 +135,22 @@ ipcMain.handle('read-user-file', async (event, filePath) => {
     }
 });
 
+// 创建 userData 目录
+ipcMain.handle('create-user-folder', async (event, folderPath) => {
+    try {
+        const userDataPath = app.getPath('userData');
+        const fullPath = path.join(userDataPath, 'Projects', folderPath);
+        // 确保目录存在
+         await fs.promises.mkdir(fullPath, {recursive: true});
+        console.log('创建成功:' + fullPath);
+        return '创建成功';
+    } catch (error) {
+        console.error('创建userData 目录失败:', error);
+        throw error;
+    }
+});
+
+
 // 写入 userData 目录下的文件
 ipcMain.handle('write-user-file', async (event, filePath, content) => {
     try {
@@ -190,4 +207,31 @@ ipcMain.handle('user-file-exists', async (event, filePath) => {
         console.error('检查文件是否存在失败:', error);
         return false;
     }
+});
+
+
+ipcMain.handle("run-mvn-command", async (_event, args: string[],cwd?: string) => {
+    return new Promise((resolve, reject) => {
+        const mvnProcess = spawn("mvn", args, {
+            cwd: cwd , // 设置工作目录，默认为当前目录
+            shell: true,
+        });
+
+        let output = "";
+        mvnProcess.stdout.on("data", (data) => {
+            output += data.toString();
+        });
+
+        mvnProcess.stderr.on("data", (data) => {
+            console.error(`stderr: ${data}`);
+        });
+
+        mvnProcess.on("close", (code) => {
+            if (code === 0) {
+                resolve(output);
+            } else {
+                reject(`Maven command failed with code ${code}: ${output}`);
+            }
+        });
+    });
 });

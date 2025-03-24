@@ -35,3 +35,9 @@ interface ModuleInfo {
     moduleName: string;
     codes: FunctionInfo[];
 }
+
+// 封装对象
+interface FileContent {
+    path: string;
+    content: string;
+}

@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import { Task } from '../types/ITask';
 import {Module, ModuleFunction} from "../types/Module";
+import {streamChat} from "../utils/ModelCall";
 
 
 export class FlowCreator extends Task {
@@ -11,7 +12,7 @@ export class FlowCreator extends Task {
     }
 
     name(): string {
-        return this.i18n.t('FlowCreator.name');
+        return this.translate('FlowCreator.name');
     }
 
     dependencies(): string[] {
@@ -46,7 +47,7 @@ export class FlowCreator extends Task {
 
                             const sysPrompt = await this.readPrompt('flow.txt');
 
-                            const response = await this.streamChat(sysPrompt, reqText);
+                            const response = await streamChat(sysPrompt, reqText);
                             let apiResult = '';
 
                             for await (const content of response) {

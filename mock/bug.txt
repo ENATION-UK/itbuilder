@@ -1,0 +1,58 @@
+# 目录结构如下（符合 Maven 标准）：
+
+```
+project/
+├── pom.xml                  # Maven 构建文件
+├── src/                    # 源代码和资源文件夹
+│   ├── main/               # 主程序源代码目录
+│   │   ├── java/           # Java 源码目录
+│   │   │   └── com/example/demo/
+│   │   │       ├── controller/    # 控制器
+│   │   │       ├── service/      # 业务逻辑层
+│   │   │       │   └── impl/     # 业务逻辑实现层
+│   │   │       ├── mapper/       # 数据持久化层 Mapper
+│   │   │       ├── entity/       # 实体类
+│   │   │       ├── config/       # 配置类
+│   │   │       └── DemoApplication.java   # 启动类
+│   │   └── resources/           # 静态资源及配置文件
+│   │       ├── application.yml  # 程序配置文件
+│   │       ├── mapper/          # MyBatis XML 映射文件存放目录
+│   └── test/                  # 测试代码
+└── .gitignore                 # 版本控制忽略配置
+```
+
+# 错误信息
+
+```
+ [INFO] Scanning for projects...
+[INFO]
+[INFO] -------------< com.example:spring-boot-mybatis-plus-druid >-------------
+[INFO] Building spring-boot-mybatis-plus-druid 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] The artifact mysql:mysql-connector-java:jar:8.0.33 has been relocated to com.mysql:mysql-connector-j:jar:8.0.33: MySQL Connector/J artifacts moved to reverse-DNS compliant Maven 2+ coordinates.
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ spring-boot-mybatis-plus-druid ---
+[INFO] Deleting /Users/wangfeng/Downloads/project/target
+[INFO]
+[INFO] --- resources:3.3.0:resources (default-resources) @ spring-boot-mybatis-plus-druid ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 2 resources
+[INFO]
+[INFO] --- compiler:3.10.1:compile (default-compile) @ spring-boot-mybatis-plus-druid ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!
+[INFO] Compiling 3 source files to /Users/wangfeng/Downloads/project/target/classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR :
+[INFO] -------------------------------------------------------------
+[ERROR] 不再支持源选项 7。请使用 8 或更高版本。
+[ERROR] 不再支持目标选项 7。请使用 8 或更高版本。
+[INFO] 2 errors
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+
+
+```

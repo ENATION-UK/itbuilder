@@ -110,9 +110,17 @@ const createProject = async () => {
   };
 
   try {
-    // 创建项目文件夹
+    // 创建detail.json
     await ElectronAPI.writeUserFile(`${newProjectPath}/detail.json`, JSON.stringify(detail));
 
+    // 创建生成目录
+    await ElectronAPI.createUserFolder(`${newProjectPath}/generation`);
+
+
+    // 创建工作区文件夹
+    await ElectronAPI.createUserFolder(`${newProjectPath}/workspace`);
+    await ElectronAPI.createUserFolder(`${newProjectPath}/workspace/docs`);
+    await ElectronAPI.createUserFolder(`${newProjectPath}/workspace/cods`);
     // 刷新项目列表
     await fetchProjects();
     createProjectDialogVisible.value = false;

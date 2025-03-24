@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import {onMounted} from 'vue';
 import {settings, loadSettings, saveSettings} from '../utils/settings';
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const goHome= () => {
+  router.push(`/`)
+};
 
 const supplierOptions = [
   {label: '阿里云通义千问', value: 'tongyi'},
@@ -21,6 +26,8 @@ onMounted(() => {
 </script>
 <template>
   <n-card :title="$t('settings')" style="margin-bottom: 16px">
+    <button @click="goHome">back</button>
+
     <n-tabs type="line" animated>
       <n-tab-pane name="model" tab="模型">
         <n-form>

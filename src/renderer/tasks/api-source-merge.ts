@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 import {ElectronAPI} from "../utils/electron-api";
 // eslint-disable-next-line import/no-unresolved
 import {Subscriber} from "rxjs/internal/Subscriber";
+import {streamChat} from "../utils/ModelCall";
 
 export class ApiSourceMerge extends Task {
     id(): string {
@@ -11,7 +12,7 @@ export class ApiSourceMerge extends Task {
     }
 
     name(): string {
-        return this.i18n.t('ApiSourceMerge.name');
+        return this.translate('ApiSourceMerge.name');
     }
 
     dependencies(): string[] {
@@ -25,7 +26,7 @@ export class ApiSourceMerge extends Task {
                     observer.next("\n开始代码合并");
 
                     const sysPrompt = await this.readPrompt('file-merge.txt');
-                    const apiFolder = await ElectronAPI.pathJoin(this.requirement.projectName, this.requirement.id,"api");
+                    const apiFolder = await ElectronAPI.pathJoin(this.requirement.projectName,"generation", this.requirement.id,"api");
                     const modules = await ElectronAPI.listUserFolder(apiFolder)
 
                     for (const module of modules) {
@@ -34,7 +35,7 @@ export class ApiSourceMerge extends Task {
                             continue
                         }
 
-                        const modulePath = await ElectronAPI.pathJoin(this.requirement.projectName, this.requirement.id,"api", module.name);
+                        const modulePath = await ElectronAPI.pathJoin(this.requirement.projectName,"generation", this.requirement.id,"api", module.name);
                         const files = await ElectronAPI.listUserFolder(modulePath);
 
                         try {
@@ -94,7 +95,7 @@ export class ApiSourceMerge extends Task {
             userInput += "\n\n";
         }
 
-        const response = await this.streamChat(sysPrompt, userInput);
+        const response = await streamChat(sysPrompt, userInput);
         let mergedContent = "";
         for await (const content of response) {
             mergedContent += content;

@@ -57,7 +57,6 @@ export class KeyManager {
     // 获取客户端，确保每个请求都在合适的并发限制内
     async getClient(): Promise<{ client: OpenAI; release: () => void }> {
         const key = this.getNextKey();
-        console.log("use key: ",key)
 
         const semaphore = this.semaphores.get(key);
         if (semaphore) {

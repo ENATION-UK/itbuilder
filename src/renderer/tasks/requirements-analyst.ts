@@ -1,5 +1,7 @@
 import { Task } from "../types/ITask";
 import {  Observable } from "rxjs";
+import {chat} from "../utils/ModelCall";
+import {streamChat} from "../utils/ModelCall";
 
 
 export class RequirementsAnalyst extends Task {
@@ -7,7 +9,7 @@ export class RequirementsAnalyst extends Task {
         return "RequirementsAnalyst"
     }
     name(): string {
-        return this.i18n.t('RequirementsAnalyst.name');
+        return this.translate('RequirementsAnalyst.name');
     }
 
     streamChatTest = async function() {
@@ -34,7 +36,7 @@ export class RequirementsAnalyst extends Task {
                     let analysisResult = '';
                     // sysPrompt = '# 语种\n 英文'+sysPrompt;
 
-                    const response = await this.streamChat(sysPrompt, userReq);
+                    const response = await streamChat(sysPrompt, userReq);
                     for await (const content of response) {
                         analysisResult += content;
                         observer.next(content);
@@ -45,7 +47,7 @@ export class RequirementsAnalyst extends Task {
                     //将需求分析整理为json
                     observer.next("\n将需求分析整理为json");
                     sysPrompt = await this.readPrompt('req-to-json.txt');
-                    const jsonResult = await this.chat(sysPrompt, analysisResult);
+                    const jsonResult = await chat(sysPrompt, analysisResult);
 
                     const reqJson = await this.extractCode(jsonResult);
 

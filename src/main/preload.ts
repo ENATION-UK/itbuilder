@@ -1,5 +1,4 @@
 import {contextBridge, ipcRenderer} from "electron";
-import {loadSettings} from "../renderer/utils/settings";
 
 contextBridge.exposeInMainWorld('electronAPI', {
     //直接读取某文件
@@ -17,6 +16,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     // 写入 userData 目录下的文件（通过主进程执行）
     writeUserFile: (filePath: string, content: string) => ipcRenderer.invoke('write-user-file', filePath, content),
 
+    createUserFolder: (folderPath: string) => ipcRenderer.invoke('create-user-folder', folderPath),
+
     listUserFolder: (folderPath: string) => ipcRenderer.invoke('list-user-folder', folderPath),
 
     // 获取 Electron 应用目录
@@ -27,5 +28,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getUserDataPath: () => ipcRenderer.invoke('get-user-data-path'),
 
     pathJoin: (...paths: string[]) => ipcRenderer.invoke('path-join', ...paths),
+
+    runMavenCommand: ( args: string[], cwd?: string) => ipcRenderer.invoke('run-mvn-command', args, cwd),
+
 });
 

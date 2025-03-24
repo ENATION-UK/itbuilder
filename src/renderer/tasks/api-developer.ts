@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
 // eslint-disable-next-line import/no-unresolved
 import {Subscriber} from "rxjs/internal/Subscriber";
 import {Module,ModuleFunction} from "../types/Module";
+import {streamChat} from "../utils/ModelCall";
 
 export class ApiDeveloper extends Task {
 
@@ -10,7 +11,7 @@ export class ApiDeveloper extends Task {
         return "ApiDeveloper"
     }
     name(): string {
-        return this.i18n.t('ApiDeveloper.name');
+        return this.translate('ApiDeveloper.name');
     }
 
     sysPrompt  ='';
@@ -95,7 +96,7 @@ export class ApiDeveloper extends Task {
         prompt += `\n\n# 数据库结构 \n${this.ddl}`;
 
 
-        const response = await this.streamChat(this.sysPrompt, prompt);
+        const response = await streamChat(this.sysPrompt, prompt);
         let codeResult = '';
         for await (const content of response) {
             codeResult += content;

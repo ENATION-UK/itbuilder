@@ -1,5 +1,6 @@
 import {Observable} from 'rxjs';
 import {Task} from '../types/ITask'; // 假设Task类型定义在这个路径
+import {streamChat} from "../utils/ModelCall";
 
 
 export class MindCreator extends Task {
@@ -9,7 +10,7 @@ export class MindCreator extends Task {
     }
 
     name(): string {
-        return this.i18n.t('MindCreator.name');
+        return this.translate('MindCreator.name');
     }
 
     dependencies(): string[] {
@@ -27,7 +28,7 @@ export class MindCreator extends Task {
                     const sysPrompt = await this.readPrompt('mind.txt');
 
                     let mindResult = '';
-                    const response = await this.streamChat(sysPrompt, requirement);
+                    const response = await streamChat(sysPrompt, requirement);
 
                     for await (const content of response) {
                         mindResult += content;

@@ -1,12 +1,13 @@
 import {Task} from "../types/ITask";
 import {Observable} from "rxjs";
+import {streamChat} from "../utils/ModelCall";
 
 export class ApiDesign extends Task {
     id(): string {
         return "ApiDesign"
     }
     name(): string {
-        return this.i18n.t('ApiDesign.name');
+        return this.translate('ApiDesign.name');
 
     }
 
@@ -30,7 +31,7 @@ export class ApiDesign extends Task {
                     let apiResult = '';
                     const  userInput = requirement+ "\n # 数据库结构\n" + ddl;
 
-                    const response = await this.streamChat(sysPrompt, userInput);
+                    const response = await streamChat(sysPrompt, userInput);
 
                     for await (const content of response) {
                         apiResult += content;
