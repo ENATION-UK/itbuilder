@@ -3,9 +3,8 @@ import { ElectronAPI } from "./electron-api";
 import { ChatCompletionMessageParam } from "openai/resources/chat";
 import {functionChat} from "./ModelCall";
 // 定义函数
-const functions = [
+const functions: OpenAI.Chat.ChatCompletionCreateParams.Function[] = [
     {
-        type: "function",
         name: "writeSourceFiles",
         description: "批量写入:将源码内容写入到相应的文件路径",
         parameters: {
@@ -27,7 +26,6 @@ const functions = [
         },
     },
     {
-        type: "function",
         name: "getCodeContent",
         description: "获取文件内容",
         parameters: {

@@ -17,7 +17,7 @@ const MAX_TOKENS = 8192;
  */
 export async function functionChat(
     messages: ChatCompletionMessageParam[],
-    functions:  OpenAI.Chat.ChatCompletionCreateParams.Function,
+    functions:  OpenAI.Chat.ChatCompletionCreateParams.Function[],
     executeFunction: (functionName: string, args: any) => Promise<string>
 ) {
     await loadSettings(); // 确保 settings 加载完成
