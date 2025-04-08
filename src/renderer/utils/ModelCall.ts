@@ -45,6 +45,7 @@ export async function functionChat(
 
             // 解析 function_call 逻辑
             const {name, arguments: args} = resultMessage.function_call;
+            // console.log("function_call:", name, args)
             const parsedArgs = JSON.parse(args);
 
             // 通过回调执行 function_call
@@ -64,8 +65,9 @@ export async function functionChat(
 }
 
 export async function* streamChat(sysPrompt: string, userIdea: string): AsyncGenerator<string> {
-
-    const {client, release} = await this.keyManager.getClient();
+    await loadSettings(); // 确保 settings 加载完成
+    const keyManager = new KeyManager(settings.apiKey);
+    const {client, release} = await keyManager.getClient();
 
     const chatCompletion = await client.chat.completions.create({
         messages: [
@@ -74,7 +76,7 @@ export async function* streamChat(sysPrompt: string, userIdea: string): AsyncGen
         ],
         model: settings.modelName,
         max_tokens: parseInt(settings.maxToken) || 2000,
-        temperature: this.temperature(),
+        temperature:  1.99,
         stream: true
     });
 
@@ -93,15 +95,17 @@ export async function* streamChat(sysPrompt: string, userIdea: string): AsyncGen
 
 export async function chat(sysPrompt: string, userIdea: string): Promise<string | null> {
     try {
-        return await this.innerChat(sysPrompt, userIdea);
+        return await innerChat(sysPrompt, userIdea);
     } catch (e) {
         // 重试一次
-        return await this.innerChat(sysPrompt, userIdea);
+        return await innerChat(sysPrompt, userIdea);
     }
 }
 
 async function innerChat(sysPrompt: string, userIdea: string): Promise<string | null> {
-    const {client, release} = await this.keyManager.getClient(); // 获取客户端，并控制并发
+    await loadSettings(); // 确保 settings 加载完成
+    const keyManager = new KeyManager(settings.apiKey);
+    const {client, release} = await keyManager.getClient(); // 获取客户端，并控制并发
 
     try {
         const chatCompletion = await client.chat.completions.create({
@@ -111,7 +115,7 @@ async function innerChat(sysPrompt: string, userIdea: string): Promise<string | 
             ],
             model: settings.modelName,
             max_tokens: parseInt(settings.maxToken) || 2000,
-            temperature: this.temperature(),
+            temperature:  1.99,
         });
 
         return chatCompletion.choices[0]?.message?.content || null; // 返回生成的内容

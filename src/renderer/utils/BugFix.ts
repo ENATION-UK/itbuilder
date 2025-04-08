@@ -5,24 +5,15 @@ import {functionChat} from "./ModelCall";
 // 定义函数
 const functions: OpenAI.Chat.ChatCompletionCreateParams.Function[] = [
     {
-        name: "writeSourceFiles",
-        description: "批量写入:将源码内容写入到相应的文件路径",
+        name: "writeCode",
+        description: "写入源码，将源码内容写入到相应的文件路径",
         parameters: {
             type: "object",
             properties: {
-                sourceFiles: {
-                    type: "array",
-                    items: {
-                        type: "object",
-                        properties: {
-                            path: { type: "string", description: "源码文件的路径" },
-                            content: { type: "string", description: "源码文件的内容" },
-                        },
-                        required: ["path", "content"],
-                    },
-                },
+                path: { type: "string", description: "源码文件的路径" },
+                content: { type: "string", description: "源码文件的内容" },
             },
-            required: ["sourceFiles"],
+            required: ["path", "content"],
         },
     },
     {
@@ -43,28 +34,30 @@ const functions: OpenAI.Chat.ChatCompletionCreateParams.Function[] = [
 // 读取代码内容
 async function getCodeContent(path: string) {
     try {
-        const fullPath = await   ElectronAPI.pathJoin("test4",path)
-        console.log(`调用获取代码内容: ${fullPath}`);
-        return await ElectronAPI.readUserFile(fullPath);
+        // const fullPath = await   ElectronAPI.pathJoin("test4",path)
+        console.log(`调用获取代码内容: ${path}`);
+        return await ElectronAPI.readFile(path);
     } catch (error) {
-        console.error("获取代码内容时出错:", error);
-        return "获取代码内容时出错";
+       // console.error("获取代码内容时出错:", error);
+        // throw new Error("获取代码内容时出错:"); // 直接抛出错误，阻止后续执行
+        console.log(`文件不存在: ${path}`)
+        return "文件不存在";
     }
 }
 
 // 写入代码文件
-async function writeSourceFiles(sourceFiles: { path: string; content: string }[]) {
+async function writeSourceFile( path: string,content: string ) {
     try {
-        for (const file of sourceFiles) {
-            const fullPath = await   ElectronAPI.pathJoin("test4",file.path)
-            await ElectronAPI.writeUserFile(fullPath, file.content);
-            console.log(`成功写入文件: ${file.path}`);
-            console.log(`写入内容: ${file.content}`);
-        }
+
+            // const fullPath = await   ElectronAPI.pathJoin("test4",file.path)
+            await ElectronAPI.writeFile(path, content);
+            console.log(`成功写入文件: ${path}`);
+            console.log(`写入内容: ${content}`);
+
         return "所有文件写入成功";
     } catch (error) {
         console.error("写入文件时出错:", error);
-        return "写入文件时出错";
+        throw new Error("写入文件时出错");
     }
 }
 // 处理 function call 逻辑的回调
@@ -73,8 +66,8 @@ async function executeFunctionCall(name: string, args: any): Promise<string> {
         switch (name) {
             case "getCodeContent":
                 return await getCodeContent(args.path);
-            case "writeSourceFiles":
-                return await writeSourceFiles(args.sourceFiles);
+            case "writeCode":
+                return await writeSourceFile(args.path, args.content);
             default:
                 return "未知的函数调用";
         }
@@ -83,7 +76,7 @@ async function executeFunctionCall(name: string, args: any): Promise<string> {
         return `执行 ${name} 出错`;
     }
 }
-// 主入口
+
 export async function fix(bug: string) {
     try {
         const sysPrompt = await ElectronAPI.readAppFile("prompts/exe-bug-fix.txt");

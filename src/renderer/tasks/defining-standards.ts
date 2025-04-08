@@ -27,7 +27,7 @@ export class DefiningStandards extends Task {
                     observer.next("\n开始规范定义");
 
                     const sysPrompt = await this.readPrompt('standard.txt');
-                    const requirement = await this.readResult('req-analysis.txt');
+                    const requirement = await this.readResult('prd.txt');
 
                     let standardResult = '';
 

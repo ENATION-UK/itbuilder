@@ -2,6 +2,8 @@ import { Task } from "../types/ITask";
 import {  Observable } from "rxjs";
 import {chat} from "../utils/ModelCall";
 import {streamChat} from "../utils/ModelCall";
+import {Module, ModuleFunction} from "../types/Module";
+import {ElectronAPI} from "../utils/electron-api";
 
 
 export class RequirementsAnalyst extends Task {
@@ -12,14 +14,6 @@ export class RequirementsAnalyst extends Task {
         return this.translate('RequirementsAnalyst.name');
     }
 
-    streamChatTest = async function() {
-        // 模拟异步操作，比如网络请求
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve('response data');
-            }, 2000);
-        });
-    };
 
     execute(): Observable<string> {
 
@@ -28,30 +22,41 @@ export class RequirementsAnalyst extends Task {
                 try {
 
                     observer.next("\n开始需求分析");
-                    // let response = await this.streamChatTest();
-                    // console.log(response);
-                    //
-                    const userReq = await this.readResult('text-requirement.txt');
-                    let sysPrompt = await this.readPrompt('req-analysis.txt');
-                    let analysisResult = '';
-                    // sysPrompt = '# 语种\n 英文'+sysPrompt;
 
+
+                    const userReq = await this.readResult('text-requirement.txt');
+                    const sysPrompt = await this.readPrompt('req-analysis.txt');
+
+                    //分析需求,输出为prd
+                    let analysisResult = '';
                     const response = await streamChat(sysPrompt, userReq);
                     for await (const content of response) {
                         analysisResult += content;
                         observer.next(content);
                     }
 
-                    await this.writeResult('req-analysis.txt', analysisResult);
+                    await this.writeResult('prd.txt', analysisResult);
 
-                    //将需求分析整理为json
-                    observer.next("\n将需求分析整理为json");
-                    sysPrompt = await this.readPrompt('req-to-json.txt');
-                    const jsonResult = await chat(sysPrompt, analysisResult);
+                    // const analysisResult = await this.readResult('prd.txt');
+                    //把需求汇总出模块
+                    const moduleSummaryPrompt = await this.readPrompt('module_summary.txt');
 
-                    const reqJson = await this.extractCode(jsonResult);
+                    let moduleArray = await chat(moduleSummaryPrompt, analysisResult);
+                    moduleArray= this.extractCode(moduleArray)
+                    const modules:string[] = JSON.parse(moduleArray);
 
-                    await this.writeResult('req-json.txt', reqJson);
+
+                    const textPickPrompt = await this.readPrompt('text-pick.txt');
+
+                    for (const module of modules) {
+                            const moduleFolderPath = await ElectronAPI.pathJoin(this.requirement.projectName,"generation",this.requirement.id,"modules",module);
+                            await ElectronAPI.createUserFolder(moduleFolderPath)
+                            const prdText = await chat(textPickPrompt, analysisResult+'\n# 提取模块:'+ module);
+                            await ElectronAPI.writeUserFile(moduleFolderPath + '/prd.txt', prdText)
+
+                    }
+
+
 
                     observer.complete();
 

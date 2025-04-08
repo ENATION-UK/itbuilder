@@ -6,6 +6,7 @@ export class ApiDesign extends Task {
     id(): string {
         return "ApiDesign"
     }
+
     name(): string {
         return this.translate('ApiDesign.name');
 
@@ -25,20 +26,24 @@ export class ApiDesign extends Task {
                     observer.next("\n开始API设计");
 
                     const sysPrompt = await this.readPrompt('api-design.txt');
-                    const ddl = await this.readResult('ddl.txt');
-                    const requirement = await this.readResult('req-analysis.txt');
 
-                    let apiResult = '';
-                    const  userInput = requirement+ "\n # 数据库结构\n" + ddl;
+                    const modules = await this.getModules();
+                    for (const module of modules) {
+                        const prd = await this.readResult('modules/' + module + '/prd.txt')
+                        const ddl = await this.readResult('modules/' + module + '/ddl.txt');
+                        let apiResult = '';
+                        const userInput = prd + "\n # 数据库结构\n" + ddl;
 
-                    const response = await streamChat(sysPrompt, userInput);
+                        const response = await streamChat(sysPrompt, userInput);
 
-                    for await (const content of response) {
-                        apiResult += content;
-                        observer.next(content);
+                        for await (const content of response) {
+                            apiResult += content;
+                            observer.next(content);
+                        }
+
+                        await this.writeResult('modules/'+module+'/api-design.txt', apiResult);
+
                     }
-
-                    await this.writeResult('api-design.txt', apiResult);
 
 
                     observer.next("\napi设计完成");

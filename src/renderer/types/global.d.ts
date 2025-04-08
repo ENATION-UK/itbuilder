@@ -23,6 +23,7 @@ declare interface Project{
 declare interface Requirement{
     projectName: string;
     id: string;
+    module: string;
 }
 
 interface FunctionInfo {

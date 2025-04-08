@@ -123,6 +123,23 @@ ipcMain.handle('read-file', async (event, fullPath) => {
 });
 
 
+// 写入文件
+ipcMain.handle('write-file', async (event, fullPath, content) => {
+    try {
+        const dir = path.dirname(fullPath);
+
+        // 确保目录存在
+        await fs.promises.mkdir(dir, { recursive: true });
+
+        await fs.promises.writeFile(fullPath, content, 'utf-8');
+
+    } catch (error) {
+        console.error('写入文件失败:', error);
+        throw error;
+    }
+});
+
+
 // 读取 userData 目录下的文件
 ipcMain.handle('read-user-file', async (event, filePath) => {
     try {
@@ -130,7 +147,7 @@ ipcMain.handle('read-user-file', async (event, filePath) => {
         const fullPath =path.join(userDataPath, 'Projects', filePath);
         return fs.promises.readFile(fullPath, 'utf-8');
     } catch (error) {
-        console.error('读取 userData 目录文件失败:', error);
+        console.error('读取 user文件失败:', error);
         throw error;
     }
 });

@@ -3,6 +3,7 @@ import {contextBridge, ipcRenderer} from "electron";
 contextBridge.exposeInMainWorld('electronAPI', {
     //直接读取某文件
     readFile: (filePath: string) => ipcRenderer.invoke('read-file', filePath),
+    writeFile: (filePath: string, content: string) => ipcRenderer.invoke('write-file', filePath, content),
 
     // 读取 __dirname 下的文件（通过主进程执行）
     readAppFile: (filePath: string) => ipcRenderer.invoke('read-app-file', filePath),

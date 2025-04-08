@@ -17,7 +17,8 @@ const modelOptions = [
   {label: 'qwen-long', value: 'qwen-long'},
   {label: 'qwen-max', value: 'qwen-max'},
   {label: 'qwen-plus', value: 'qwen-plus'},
-  {label: 'qwen-turbo', value: 'qwen-turbo'}
+  {label: 'qwen-turbo', value: 'qwen-turbo'},
+  {label: 'deepseek-r1', value: 'deepseek-r1'}
 ];
 onMounted(() => {
   loadSettings();

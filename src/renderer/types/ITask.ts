@@ -1,9 +1,9 @@
 import {Observable, Subject} from "rxjs";
 import {ElectronAPI} from '../utils/electron-api';
-import {settings} from '../utils/settings';
-import  i18n  from '../i18n';
+import i18n from '../i18n';
 import {KeyManager} from '../utils/KeyManager'
 import {chat} from '../utils/ModelCall'
+
 // 基础任务类
 export abstract class Task implements ITask {
     protected requirement: Requirement | null = null;
@@ -11,9 +11,6 @@ export abstract class Task implements ITask {
 
     protected translate = i18n.global.t;
 
-    constructor() {
-        this.keyManager = new KeyManager(settings.apiKey);
-    }
 
     setRequirement(requirement: Requirement): void {
         this.requirement = requirement;
@@ -36,19 +33,10 @@ export abstract class Task implements ITask {
     }
 
 
-
-
-    protected async extractCode(str: string | null): Promise<string> {
-        if (!str) {
-            return '';
-        }
-        str = await this.jsonFix(str)
-        // 先去掉特定的代码标识，如 ```json, ```sql, ```mermaid
-        str = str.replace(/```(json|sql|mermaid)/g, "```");
-
-        // 正则匹配 ``` 包裹的代码
-        const match = str.match(/```[\r\n]?([\s\S]*?)```/);
-        return match ? match[1].trim() : str
+     extractCode(text: string): string | null {
+        const regex = /```(?:\w+)?\n(.*?)```/s;  // (?s) 等价于 /s 标志，允许 . 匹配换行符
+        const match = text.match(regex);
+        return match ? match[1] : text;
     }
 
     protected async jsonFix(json: string): Promise<string> {
@@ -73,28 +61,17 @@ export abstract class Task implements ITask {
 
 
 
-     protected extractAllFileContents(markdown: string): FileContent[] {
+    protected extractAllFileContents(markdown: string): FileContent[] {
         const fileContents: FileContent[] = [];
 
-        // 正则表达式匹配路径和代码块
-        const pathRegex = /#\s*`([^`]+)`/g; // 全局匹配路径
-        const codeBlockRegex = /```(?:[a-zA-Z]+)?\s*([\s\S]*?)\s*```/g; // 全局匹配代码块，支持任意语言标识
+        // 先匹配所有路径 + 代码块
+        const fileRegex = /`(\/[^\n`]+)`\s*\n```[a-zA-Z]*\s*([\s\S]*?)\s*```/g;
 
-        // 提取所有路径
-        const pathMatches = [...markdown.matchAll(pathRegex)];
-        // 提取所有代码块
-        const codeMatches = [...markdown.matchAll(codeBlockRegex)];
-
-        // 确保路径和代码块数量一致
-        if (pathMatches.length !== codeMatches.length) {
-            throw new Error("路径和代码块数量不匹配");
-        }
-
-        // 将路径和代码封装为 FileContent 对象
-        for (let i = 0; i < pathMatches.length; i++) {
-            const path = pathMatches[i][1]; // 提取路径
-            const content = codeMatches[i][1].trim(); // 提取代码并去除空白
-            fileContents.push({path, content});
+        let match;
+        while ((match = fileRegex.exec(markdown)) !== null) {
+            const path = match[1].trim();   // 提取文件路径
+            const content = match[2].trim(); // 提取代码块内容
+            fileContents.push({ path, content });
         }
 
         return fileContents;
@@ -106,16 +83,19 @@ export abstract class Task implements ITask {
         callback?: (info: FileContent) => void
     ) {
         const jsonArray = this.extractAllFileContents(markdown);
+        // debugger
         for (const item of jsonArray) {
-            const filePath = await ElectronAPI.pathJoin('project', item.path);
-            console.log(filePath)
-            await ElectronAPI.writeUserFile(filePath, item.content);
+
             const topProjectPath = await ElectronAPI.pathJoin(
                 this.requirement.projectName,
                 'project',
                 item.path
             );
-            await this.writeResult(topProjectPath, item.content);
+            console.log("写入", item.path);
+            item.content = await this.mergeCode(topProjectPath, item.content)
+            item.content = this.extractCode(item.content)
+            await ElectronAPI.writeUserFile(topProjectPath, item.content)
+            // await this.writeResult(topProjectPath, item.content);
 
             if (callback) {
                 // 调用传入的回调函数
@@ -124,6 +104,37 @@ export abstract class Task implements ITask {
         }
     }
 
+    private async mergeCode(path: string, code: string): Promise<string> {
+        let originContent = '';
+        try {
+             originContent = await ElectronAPI.readUserFile(path);
+        } catch (e){
+            console.log("文件不存在",path);
+        }
+
+        //如果原文件为空则直接返回新代码即可
+        if (originContent==''){
+            return code;
+        }
+
+        const userInput=`# 代码版本1
+        ${originContent}
+        # 代码版本2
+         ${code}
+        `;
+        const sysPrompt = await this.readPrompt('file-merge.txt');
+        const response = await chat(sysPrompt, userInput);
+
+        return response;
+    }
+
+    protected async getModules(): Promise<string[]> {
+        const moduleFolderPath=await ElectronAPI.pathJoin(this.requirement.projectName,"generation", this.requirement.id, "modules")
+
+        const folders = await ElectronAPI.listUserFolder(moduleFolderPath);
+
+        return folders.filter((folder) => folder.type === 'directory').map((folder) => folder.name)
+    }
 
     protected temperature(): number {
         return 1.99;

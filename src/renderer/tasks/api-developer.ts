@@ -61,8 +61,13 @@ export class ApiDeveloper extends Task {
 
                     //为每个模块生成api代码
                     for (const module of modules) {
-                        for (const func of module.functions) {
-                            await this.generateCode(func, module.moduleName, observer);
+                        if (module.moduleName=='用户管理模块') {
+                            for (const func of module.functions) {
+                                if (func.functionName=='用户注册与登录'){
+                                    await this.generateCode(func, module.moduleName, observer);
+                                }
+
+                            }
                         }
                     }
 
@@ -95,7 +100,7 @@ export class ApiDeveloper extends Task {
         prompt += `\n\n# api架构 \n${this.apiDesign}`;
         prompt += `\n\n# 数据库结构 \n${this.ddl}`;
 
-
+       // await this.writeResult("p.txt", prompt);
         const response = await streamChat(this.sysPrompt, prompt);
         let codeResult = '';
         for await (const content of response) {
@@ -105,6 +110,6 @@ export class ApiDeveloper extends Task {
 
 
         await this.writeResult("api/"+moduleName+"/api-" + functionName +  ".txt", codeResult);
-
+       await this.writeCodes( codeResult )
     }
 }

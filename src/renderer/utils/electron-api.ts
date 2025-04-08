@@ -1,5 +1,7 @@
 export const ElectronAPI = {
     readFile: (filePath: string): Promise<string> => window.electronAPI.readFile(filePath),
+    writeFile: (filePath: string, content: string): Promise<string> => window.electronAPI.writeFile(filePath, content),
+
     readAppFile: (filePath: string): Promise<string> => window.electronAPI.readAppFile(filePath),
     writeAppFile: (filePath: string, content: string): Promise<string> => window.electronAPI.writeAppFile(filePath, content),
 
