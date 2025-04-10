@@ -1,10 +1,10 @@
-import { Task } from "../types/ITask";
+import { Task } from "../../types/ITask";
 import { Observable } from "rxjs";
 
-import {ElectronAPI} from "../utils/electron-api";
+import {ElectronAPI} from "../../utils/electron-api";
 // eslint-disable-next-line import/no-unresolved
 import {Subscriber} from "rxjs/internal/Subscriber";
-import {streamChat} from "../utils/ModelCall";
+import {streamChat} from "../../utils/ModelCall";
 
 export class ApiSourceMerge extends Task {
     id(): string {

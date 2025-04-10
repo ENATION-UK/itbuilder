@@ -1,6 +1,6 @@
-import {Task} from "../types/ITask";
+import {Task} from "../../types/ITask";
 import {Observable} from "rxjs";
-import {streamChat} from "../utils/ModelCall";
+import {streamChat} from "../../utils/ModelCall";
 
 export class CodeReview extends Task {
     id(): string {
@@ -12,7 +12,7 @@ export class CodeReview extends Task {
     }
 
     dependencies(): string[] {
-        return ['RequirementsAnalyst', 'DatabaseDesign']
+        return []
     }
 
 

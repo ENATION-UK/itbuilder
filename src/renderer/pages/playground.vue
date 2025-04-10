@@ -8,17 +8,20 @@
     <button @click="codeWriteFun">Write Code</button>
     <button @click="codeReviewFun">Code Review</button>
     <button @click="projectReviewFun">ProjectReview</button>
+    <button @click="projectReviewFun">ProjectReview</button>
+    <button @click="apiFun">开发api</button>
     <button @click="goHome">back</button>
   </div>
 </template>
 <script setup lang="ts">
 
-import {CodeWrite} from '../tasks/code-write'
+import {CodeWrite} from '../tasks/children/code-write'
 import {DatabaseDesign} from '../tasks/database-design'
-import {ProjectReview} from "../tasks/project-review";
-import {CodeReview} from "../tasks/code-review";
-import {ProjectInit} from "../tasks/project-init";
+import {ProjectReview} from "../tasks/children/project-review";
+import {CodeReview} from "../tasks/children/code-review";
+import {ApiDeveloper} from "../tasks/api-developer";
 import {ApiDesign} from "../tasks/api-design";
+import {ProjectInit} from "../tasks/project-init";
 import {DefiningStandards} from "../tasks/defining-standards";
 import {RequirementsAnalyst} from "../tasks/requirements-analyst";
 import {useRouter} from 'vue-router'
@@ -51,6 +54,14 @@ const execute = async(task: ITask) => {
     }
   })
 }
+
+const apiFun = async () => {
+
+  let projectInit = new ApiDeveloper();
+  await execute(projectInit)
+}
+
+
 
 const reqFun = async () => {
 

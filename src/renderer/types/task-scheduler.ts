@@ -106,7 +106,7 @@ export class TaskScheduler {
         let execution$: Observable<{ name: string; output: string }>;
 
         if (task.dependencies().every(dep => this.completedTasks.has(dep))) {
-            console.log(` ${task.id()}所以依赖都已完成`);
+            console.log(` ${task.id()}所有依赖都已完成`);
 
             // 依赖已完成，执行本任务
             execution$ = new Observable(observer => {

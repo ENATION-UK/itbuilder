@@ -5,47 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="442f6b45-8b01-432d-bb43-618b8be0203a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/mock/bug.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mock/project.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prompts/bug-fix.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prompts/exe-bug-fix.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prompts/folder_collation.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prompts/java-project.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prompts/project-write.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prompts/vue-project.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/tasks/bug-fix.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/tasks/project-init.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/utils/BugFix.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/utils/ModelCall.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/preload.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/preload.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/ai.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/ai.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/i18n/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/i18n/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/home.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prompts/api-dev.txt" beforeDir="false" afterPath="$PROJECT_DIR$/prompts/api-dev.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/pages/playground.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/playground.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/settings.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/settings.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/api-design.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/api-design.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/tasks/api-developer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/api-developer.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/api-source-merge.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/api-source-merge.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/api-source-writer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/api-source-writer.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/database-design.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/database-design.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/defining-standards.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/defining-standards.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/flow-creator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/flow-creator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/mind-creator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/mind-creator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/page-design.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/page-design.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/requirements-analyst.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/requirements-analyst.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/ui-source-writer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/ui-source-writer.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/types/ITask.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/types/ITask.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/types/electron-api.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/types/electron-api.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/types/global.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/types/global.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/utils/KeyManager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/utils/KeyManager.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/utils/electron-api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/utils/electron-api.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/api-source-merge.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/backup/api-source-merge.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/api-source-writer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/backup/api-source-writer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/code-review.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/children/code-review.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/code-write.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/children/code-write.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/project-review.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/children/project-review.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/types/task-scheduler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/types/task-scheduler.ts" afterDir="false" />
     </list>
-    <list id="88a8f95a-d124-4e96-8a6d-03fe74f5b9db" name="ingore" comment="" />
+    <list id="88a8f95a-d124-4e96-8a6d-03fe74f5b9db" name="ingore" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -64,6 +37,23 @@
   </component>
   <component name="GoVcsConfiguration">
     <option name="GO_FMT" value="false" />
+  </component>
+  <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/.idea/workspace.xml">
+      <ranges>
+        <range start1="7" end1="19" start2="7" end2="7" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
+        <range start1="20" end1="27" start2="8" end2="9" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
+        <range start1="28" end1="30" start2="10" end2="10" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
+        <range start1="31" end1="46" start2="11" end2="20" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
+        <range start1="47" end1="48" start2="21" end2="21" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
+        <range start1="67" end1="67" start2="40" end2="57" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
+        <range start1="117" end1="117" start2="107" end2="109" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
+        <range start1="143" end1="144" start2="135" end2="136" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
+        <range start1="193" end1="194" start2="185" end2="210" changelist="88a8f95a-d124-4e96-8a6d-03fe74f5b9db" />
+        <range start1="199" end1="199" start2="215" end2="226" changelist="88a8f95a-d124-4e96-8a6d-03fe74f5b9db" />
+        <range start1="208" end1="209" start2="235" end2="239" changelist="88a8f95a-d124-4e96-8a6d-03fe74f5b9db" />
+      </ranges>
+    </file>
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -115,6 +105,8 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/renderer/tasks" />
+      <recent name="$PROJECT_DIR$/src/renderer/tasks/children" />
+      <recent name="$PROJECT_DIR$/src/renderer/tasks/backup" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/main" />
     </key>
@@ -141,7 +133,7 @@
       <workItem from="1741591033936" duration="902000" />
       <workItem from="1741673511138" duration="2216000" />
       <workItem from="1741941371492" duration="22026000" />
-      <workItem from="1742544439051" duration="34228000" />
+      <workItem from="1742544439051" duration="170750000" />
     </task>
     <task id="LOCAL-00001" summary="🚀Refactor the packaging rules">
       <option name="closed" value="true" />
