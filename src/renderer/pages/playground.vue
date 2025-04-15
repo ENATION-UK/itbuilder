@@ -1,128 +1,153 @@
-<template>
-  <div>
-    <button @click="reqFun">需求分析</button>
-    <button @click="standardsFun">规范定义</button>
-    <button @click="dbFun">数据库设计</button>
-    <button @click="projectInitFun">项目初始化</button>
-    <button @click="apiDesignFun">API Design</button>
-    <button @click="codeWriteFun">Write Code</button>
-    <button @click="codeReviewFun">Code Review</button>
-    <button @click="projectReviewFun">ProjectReview</button>
-    <button @click="projectReviewFun">ProjectReview</button>
-    <button @click="apiFun">开发api</button>
-    <button @click="goHome">back</button>
-  </div>
-</template>
-<script setup lang="ts">
-
-import {CodeWrite} from '../tasks/children/code-write'
-import {DatabaseDesign} from '../tasks/database-design'
-import {ProjectReview} from "../tasks/children/project-review";
-import {CodeReview} from "../tasks/children/code-review";
-import {ApiDeveloper} from "../tasks/api-developer";
-import {ApiDesign} from "../tasks/api-design";
-import {ProjectInit} from "../tasks/project-init";
-import {DefiningStandards} from "../tasks/defining-standards";
-import {RequirementsAnalyst} from "../tasks/requirements-analyst";
-import {useRouter} from 'vue-router'
+<script setup>
+import {ref, onMounted, nextTick} from 'vue'
+import { VueFlow,useVueFlow } from '@vue-flow/core'
+import { useLayout } from '../utils/useLayout'
+import TaskNodeView from "./task-node.vue";
+import {layoutWithElk} from "../utils/elkLayout";
+import {ElkNode} from "elkjs/lib/elk.bundled"; // 刚才那段 useLayout 函数
 
 
-const router = useRouter()
-const goHome = () => {
-  router.push(`/`)
-};
-
-
-const execute = async(task: ITask) => {
-
-  const requirement: Requirement = {
-    projectName: 'test4',
-    id: '2',
-    module: '结算和财务管理',
-  };
-
-
-  task.setRequirement(requirement)
-
-  task.execute().subscribe({
-    next: output => console.log(output),
-    complete: async () => {
-      console.log('completed')
+const nodes = ref([
+  {
+    "id": "RequirementsAnalyst",
+    "label": "需求分析",
+    "position": {
+      "x": 0,
+      "y": 0
     },
-    error: async err => {
-      console.error(` failed:`, err);
-    }
-  })
+    "data": {
+      "label": "需求分析",
+      "status": "wait"
+    },
+    "type": "task",
+    "sourcePosition": "right",
+    "targetPosition": "left"
+  },
+  {
+    "id": "DefiningStandards",
+    "label": "数据库设计",
+    "position": {
+      "x": 0,
+      "y": 0
+    },
+    "data": {
+      "label": "数据库设计",
+      "status": "wait"
+    },
+    "type": "task",
+    "sourcePosition": "right",
+    "targetPosition": "left"
+  },
+
+  {
+    "id": "ApiDeveloper",
+    "label": "Api代码编写",
+    "position": {
+      "x": 0,
+      "y": 0
+    },
+    "data": {
+      "label": "Api代码编写",
+      "status": "wait",
+      "isParent": true
+    },
+    "type":"group",
+    "sourcePosition": "right",
+    "targetPosition": "left",
+    style: { backgroundColor: 'rgba(16, 185, 129, 0.5)' },
+  },
+  {
+    "id": "CodeWrite",
+    "label": "编写代码",
+    "position": {
+      "x": 0,
+      "y": 0
+    },
+    "data": {
+      "label": "编写代码",
+      "status": "wait"
+    },
+    "type": "task",
+    "sourcePosition": "right",
+    "targetPosition": "left",
+    "parentNode": "ApiDeveloper"
+  },
+  {
+    "id": "CodeReview",
+    "label": "代码审查",
+    "position": {
+      "x": 0,
+      "y": 0
+    },
+    "data": {
+      "label": "代码审查",
+      "status": "wait"
+    },
+    "type": "task",
+    "sourcePosition": "right",
+    "targetPosition": "left",
+    "parentNode": "ApiDeveloper"
+  },
+])
+
+const edges = ref([
+
+  {
+    "id": "edge-RequirementsAnalyst-DefiningStandards",
+    "source": "RequirementsAnalyst",
+    "target": "DefiningStandards",
+    "markerEnd": "arrowclosed"
+  },
+
+  {
+    "id": "edge-DefiningStandards-ApiDeveloper",
+    "source": "DefiningStandards",
+    "target": "ApiDeveloper",
+    "markerEnd": "arrowclosed"
+  },
+  {
+    "id": "edge-CodeWrite-CodeReview",
+    "source": "CodeWrite",
+    "target": "CodeReview",
+    "markerEnd": "arrowclosed",
+
+  }
+])
+
+const layoutedNodes = ref([])
+const layoutedEdges = ref([])
+
+// onMounted(async () => {
+//   const result = await layoutWithElk(nodes.value, edges.value)
+//   layoutedNodes.value = result.nodes
+//   layoutedEdges.value = result.edges
+// })
+const {fitView,findNode} = useVueFlow();
+const { getNodes, getEdges, updateNodePositions } = useVueFlow()
+
+async function layoutGraph(direction) {
+
+  const result = await layoutWithElk(nodes.value, edges.value, findNode)
+  nodes.value = result.nodes
+  edges.value = result.edges
+  nextTick(() => fitView());
 }
-
-const apiFun = async () => {
-
-  let projectInit = new ApiDeveloper();
-  await execute(projectInit)
-}
-
-
-
-const reqFun = async () => {
-
-  let projectInit = new RequirementsAnalyst();
-  await execute(projectInit)
-}
-
-const dbFun = async () => {
-
-  let projectInit = new DatabaseDesign();
-  await execute(projectInit)
-}
-
-
-const projectInitFun = async () => {
-
-  let projectInit = new ProjectInit();
-  await execute(projectInit)
-}
-
-const apiDesignFun = async () => {
-
-  let projectInit = new ApiDesign();
-  await execute(projectInit)
-}
-
-const standardsFun = async () => {
-
-  let projectInit = new DefiningStandards();
-  await execute(projectInit)
-}
-
-
-const codeWriteFun = async () => {
-
-  let projectInit = new CodeWrite();
-  await execute(projectInit)
-}
-
-
-
-const codeReviewFun = async () => {
-
-
-  let projectInit = new CodeReview();
-
-  await execute(projectInit)
-}
-
-
-const projectReviewFun = async () => {
-
-
-  let projectReview = new ProjectReview();
-
-  await execute(projectReview)
-}
-
-
 </script>
 
-<style scoped>
-button{ width: 100px;height:30px;margin: 20px}
+<template>
+  <VueFlow :nodes="nodes" :edges="edges" class="flow-container"   @nodes-initialized="layoutGraph"  fit-view-on-init elevate-edges-on-select   >
+    <template #node-task="props">
+      <TaskNodeView v-bind="props"/>
+    </template>
+  </VueFlow>
+</template>
+<style>
+@import '@vue-flow/core/dist/style.css';
+@import '@vue-flow/core/dist/theme-default.css';
+
+.flow-container {
+  height: 100vh;
+  width: 100%;
+}
+
 </style>

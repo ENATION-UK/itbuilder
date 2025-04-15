@@ -2,11 +2,10 @@ import {Task} from "../types/ITask";
 import {Observable} from "rxjs";
 // eslint-disable-next-line import/no-unresolved
 import {Subscriber} from "rxjs/internal/Subscriber";
-import {Module, ModuleFunction} from "../types/Module";
-import {streamChat} from "../utils/ModelCall";
-import {CodeWrite} from "./children/code-write";
-import {CodeReview} from "./children/code-review";
-import {ProjectReview} from "./children/project-review";
+
+import {CodeWrite} from "./code/code-write";
+import {CodeReview} from "./code/code-review";
+import {ProjectReview} from "./code/project-review";
 
 export class ApiDeveloper extends Task {
 
@@ -18,11 +17,19 @@ export class ApiDeveloper extends Task {
         return this.translate('ApiDeveloper.name');
     }
 
-    private children: ITask[] = [new CodeWrite(), new CodeReview(), new ProjectReview()];
 
     dependencies(): string[] {
-        return ['RequirementsAnalyst', 'DefiningStandards', 'DatabaseDesign', 'ApiDesign']
+        return ['ProjectInit']
     }
+
+    isGroup(): boolean {
+        return true;
+    }
+
+    children(): ITask[] {
+        return  [new CodeWrite(), new CodeReview(), new ProjectReview()];
+    }
+
 
     private executeChild(observer: Subscriber<string>, index = 0): Promise<void> {
         return new Promise((resolve, reject) => {
@@ -30,7 +37,7 @@ export class ApiDeveloper extends Task {
                 resolve();
                 return;
             }
-            const child = this.children[index];
+            const child = this.children();
             child.setRequirement(this.requirement);
             const childObservable = child.execute();
             const childSubscription = childObservable.subscribe({

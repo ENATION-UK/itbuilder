@@ -7,12 +7,12 @@ export class CodeReview extends Task {
         return "CodeReview"
     }
     name(): string {
-        return this.translate('CodeReview.name');
+        return "代码审查"
 
     }
 
     dependencies(): string[] {
-        return []
+        return ["CodeWrite"]
     }
 
 

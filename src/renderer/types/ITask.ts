@@ -11,6 +11,14 @@ export abstract class Task implements ITask {
 
     protected translate = i18n.global.t;
 
+    isGroup(): boolean {
+        return false;
+    }
+
+    children(): ITask[] {
+        return [];
+    }
+
 
     setRequirement(requirement: Requirement): void {
         this.requirement = requirement;

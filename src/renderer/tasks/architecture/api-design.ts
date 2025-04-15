@@ -1,6 +1,6 @@
-import {Task} from "../types/ITask";
+import {Task} from "../../types/ITask";
 import {Observable} from "rxjs";
-import {streamChat} from "../utils/ModelCall";
+import {streamChat} from "../../utils/ModelCall";
 
 export class ApiDesign extends Task {
     id(): string {

@@ -8,16 +8,19 @@ const props = defineProps({
   sourcePosition: String,
   targetPosition: String
 })
+
 </script>
 <template>
-  <div class="custom-node">
+  <div :class="['custom-node', { parentNode: data.isParent }]">
     <div :class="data.status"></div>
     <div>{{ data.label }}</div>
     <Handle type="target" :position="targetPosition" />
     <Handle type="source" :position="sourcePosition" />
   </div>
 </template>
-<style scoped lang="scss">
+<style  lang="scss">
+
+
 /* 共同的样式 */
 .spinner {
   border: 3px solid #f3f3f3;
@@ -59,7 +62,6 @@ const props = defineProps({
 .custom-node {
   display: flex;  /* 让子元素横向排列 */
   gap: 5px; /* 控制间距 */
-
   padding: 10px;
   border: 0px solid black;
   background: #eceaea;

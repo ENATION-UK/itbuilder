@@ -11,6 +11,8 @@ declare interface ITask  {
     execute(): Observable<string>;
     dependencies(): string[];
     setRequirement(requirement: Requirement):void;
+    isGroup(): boolean;
+    children(): ITask[];
 }
 
 declare interface Project{

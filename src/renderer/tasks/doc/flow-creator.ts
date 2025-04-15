@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
-import { Task } from '../types/ITask';
-import {Module, ModuleFunction} from "../types/Module";
-import {streamChat} from "../utils/ModelCall";
+import { Task } from '../../types/ITask';
+import {Module, ModuleFunction} from "../../types/Module";
+import {streamChat} from "../../utils/ModelCall";
 
 
 export class FlowCreator extends Task {

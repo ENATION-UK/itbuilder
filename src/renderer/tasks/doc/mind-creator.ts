@@ -1,6 +1,6 @@
 import {Observable} from 'rxjs';
-import {Task} from '../types/ITask'; // 假设Task类型定义在这个路径
-import {streamChat} from "../utils/ModelCall";
+import {Task} from '../../types/ITask'; // 假设Task类型定义在这个路径
+import {streamChat} from "../../utils/ModelCall";
 
 
 export class MindCreator extends Task {

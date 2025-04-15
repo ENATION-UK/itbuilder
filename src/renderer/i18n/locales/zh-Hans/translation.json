@@ -1,10 +1,22 @@
 {
   "settings": "设置",
+  "ProjectInit": {
+    "name": "项目初始化"
+  },
+  "Architecture": {
+    "name": "架构"
+  },
   "ApiDesign": {
     "name": "Api架构设计"
   },
   "ApiDeveloper": {
-    "name": "Api代码编写"
+    "name": "Api开发"
+  },
+  "UIDeveloper": {
+    "name": "UI开发"
+  },
+  "DocWrite": {
+    "name": "文档书写"
   },
   "DatabaseDesign": {
     "name": "数据库设计"

@@ -1,6 +1,6 @@
 import {Observable} from 'rxjs';
-import {Task} from "../types/ITask";
-import {streamChat} from "../utils/ModelCall";
+import {Task} from "../../types/ITask";
+import {streamChat} from "../../utils/ModelCall";
 
 export class PageDesign extends Task {
     id(): string {

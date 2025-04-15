@@ -13,7 +13,7 @@ export class ProjectInit extends Task {
     }
 
     dependencies(): string[] {
-        return ['RequirementsAnalyst']
+        return ['Architecture']
     }
 
 

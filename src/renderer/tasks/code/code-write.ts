@@ -5,11 +5,11 @@ import {streamChat} from "../../utils/ModelCall";
 
 export class CodeWrite extends Task {
     id(): string {
-        return "test"
+        return "CodeWrite"
     }
 
     name(): string {
-        return this.translate("settings");
+        return "编写代码"
 
     }
 

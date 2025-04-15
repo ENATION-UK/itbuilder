@@ -4,9 +4,11 @@ export interface TaskNode {
     position: { x: number; y: number };
     data: {
         label: string;
+        isParent: boolean;
         status: 'wait' | 'running' | 'completed'; // 假设 status 可能有多种状态
     };
     type: 'task';
+    style:object;
     sourcePosition: 'right'; // 右侧出线
     targetPosition: 'left'; // 左侧进线
 }

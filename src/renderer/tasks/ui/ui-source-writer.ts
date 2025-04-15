@@ -1,8 +1,8 @@
-import { Task } from "../types/ITask";
+import { Task } from "../../types/ITask";
 import {  Observable } from "rxjs";
 // eslint-disable-next-line import/no-unresolved
 import {Subscriber} from "rxjs/internal/Subscriber";
-import {Module,Page} from "../types/Module";
+import {Module,Page} from "../../types/Module";
 
 
 export class UISourceWriter extends Task {

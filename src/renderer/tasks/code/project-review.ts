@@ -12,12 +12,12 @@ export class ProjectReview extends Task {
     }
 
     name(): string {
-        return this.translate("settings");
+        return "编译调试"
 
     }
 
     dependencies(): string[] {
-        return []
+        return ["CodeReview"]
     }
 
 
@@ -44,7 +44,7 @@ export class ProjectReview extends Task {
                         } catch (error) {
                             observer.next("\n开始修复bug");
                             const standard = await this.readResult("standard.txt");
-                            console.error("Error running mvn command:", error);
+                            console.log("Error running mvn command:", error);
                             const bug = `
 # 工程跟路径  \`${fullPath}\` 
 # 错误信息 
