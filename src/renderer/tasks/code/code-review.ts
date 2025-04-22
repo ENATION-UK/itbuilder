@@ -1,5 +1,5 @@
 import {Task} from "../../types/ITask";
-import {Observable} from "rxjs";
+import {Observable,Subscriber} from "rxjs";
 import {streamChat} from "../../utils/ModelCall";
 
 export class CodeReview extends Task {
@@ -21,22 +21,36 @@ export class CodeReview extends Task {
         return new Observable<string>((observer) => {
             (async () => {
                 try {
+                    const modules = await this.getModules();
+                    for (const module of modules) {
+                        await this.extracted(observer,module);
+                    }
+                    observer.next("\n代码优化完成");
+                    observer.complete();
 
-                    observer.next("\n开始code review");
+                } catch (error) {
+                    observer.error(error);
+                }
+            })();
+        });
+    }
 
-                    const sysPrompt = await this.readPrompt('code-review.txt');
-                    const ddl = await this.readResult(`modules/${this.requirement.module}/ddl.txt`);
-                    const apiDesign = await this.readResult(`modules/${this.requirement.module}/api-design.txt`);
-                    const standards = await this.readResult('standard.txt');
+    private async extracted(observer: Subscriber<string>,module: string) {
+        observer.next("\n开始code review");
 
-                    const code = await this.readResult(`modules/${this.requirement.module}/code.txt`);
+        const sysPrompt = await this.readPrompt('code-review.txt');
+        const ddl = await this.readResult(`modules/${module}/ddl.txt`);
+        const apiDesign = await this.readResult(`modules/${module}/api-design.txt`);
+        const standards = await this.readResult('standard.txt');
 
-                    const requirement = await this.readResult(`modules/${this.requirement.module}/prd.txt`);
+        const code = await this.readResult(`modules/${module}/code.txt`);
+
+        const requirement = await this.readResult(`modules/${module}/prd.txt`);
 
 
-                    let apiResult = '';
+        let apiResult = '';
 
-                    let  userInput = `
+        let userInput = `
 # 需求
  ${requirement}
 # 数据库结构
@@ -51,36 +65,26 @@ ${standards}
 ${code}
 `;
 
-                    const response = await streamChat(sysPrompt, userInput);
+        const response = await streamChat(sysPrompt, userInput);
 
-                    for await (const content of response) {
-                        apiResult += content;
-                        observer.next(content);
-                    }
+        for await (const content of response) {
+            apiResult += content;
+            observer.next(content);
+        }
 
-                    await this.writeResult(`modules/${this.requirement.module}/code-review.txt`, apiResult);
+        await this.writeResult(`modules/${module}/code-review.txt`, apiResult);
 
-                    const codeFix = await this.readPrompt('code-fix.txt');
-                    userInput+= "\n\n # 代码审查结果 \n"+ apiResult;
+        const codeFix = await this.readPrompt('code-fix.txt');
+        userInput += "\n\n # 代码审查结果 \n" + apiResult;
 
-                    const fixResponse = await streamChat(codeFix, userInput);
-                    apiResult = '';
-                    for await (const content of fixResponse) {
-                        apiResult += content;
-                        observer.next(content);
-                    }
+        const fixResponse = await streamChat(codeFix, userInput);
+        apiResult = '';
+        for await (const content of fixResponse) {
+            apiResult += content;
+            observer.next(content);
+        }
 
-                    await this.writeResult(`modules/${this.requirement.module}/code-fix.txt`, apiResult);
-                    await this.writeCodes(apiResult);
-
-                    observer.next("\n代码优化完成");
-                    observer.complete();
-
-                } catch (error) {
-                    observer.error(error);
-                }
-            })();
-        });
+        await this.writeResult(`modules/${module}/code-fix.txt`, apiResult);
+        await this.writeCodes(apiResult);
     }
-
 }

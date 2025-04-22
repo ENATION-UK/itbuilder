@@ -36,7 +36,13 @@ async function getCodeContent(path: string) {
     try {
         // const fullPath = await   ElectronAPI.pathJoin("test4",path)
         console.log(`调用获取代码内容: ${path}`);
-        return await ElectronAPI.readFile(path);
+        let source = await ElectronAPI.readFile(path);
+        source = source
+            .split('\n')
+            .map((line, index) => `${index + 1} ${line}`)
+            .join('\n');
+        console.log( source);
+        return source
     } catch (error) {
        // console.error("获取代码内容时出错:", error);
         // throw new Error("获取代码内容时出错:"); // 直接抛出错误，阻止后续执行

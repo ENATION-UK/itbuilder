@@ -1,5 +1,5 @@
 import ELK from 'elkjs/lib/elk.bundled.js'
-import {useVueFlow} from "@vue-flow/core";
+import {Position} from "@vue-flow/core";
 
 const elk = new ELK()
 
@@ -22,9 +22,9 @@ interface FlowEdge {
     [key: string]: any
 }
 
-export async function layoutWithElk(nodes: FlowNode[], edges: FlowEdge[],findNode): Promise<{ nodes: FlowNode[]; edges: FlowEdge[] }> {
+export async function layoutWithElk(nodes: FlowNode[], edges: FlowEdge[],findNode,direction:string): Promise<{ nodes: FlowNode[]; edges: FlowEdge[] }> {
 
-
+    const isHorizontal = direction === 'RIGHT' || direction === 'LEFT'
     // 构建树状结构
     const nodeMap = new Map<string, any>()
     const childrenMap = new Map<string, any[]>()
@@ -32,7 +32,6 @@ export async function layoutWithElk(nodes: FlowNode[], edges: FlowEdge[],findNod
 
     nodes.forEach((node) => {
         const graphNode = findNode(node.id)
-        console.log(graphNode)
         nodeMap.set(node.id, {
             id: node.id,
             width: graphNode?.dimensions?.width || 150,
@@ -70,7 +69,8 @@ export async function layoutWithElk(nodes: FlowNode[], edges: FlowEdge[],findNod
         id: 'root',
         layoutOptions: {
             'elk.algorithm': 'org.eclipse.elk.layered',
-            'elk.direction': 'RIGHT',
+            'elk.direction': direction,
+            'elk.layered.spacing.nodeNodeBetweenLayers': 80,
             'elk.spacing.nodeNode': '80',
         },
         children: topLevelNodes,
@@ -83,7 +83,6 @@ export async function layoutWithElk(nodes: FlowNode[], edges: FlowEdge[],findNod
 
     // 执行布局
     const result = await elk.layout(elkGraph)
-
     // 扁平化布局结果
     const flatNodes: FlowNode[] = []
 
@@ -91,11 +90,23 @@ export async function layoutWithElk(nodes: FlowNode[], edges: FlowEdge[],findNod
         const originalNode = nodes.find((n) => n.id === node.id)!
 
         // 判断是否是父节点
-        const isParent = originalNode?.data?.isParent
+        const isParent = originalNode?.isParent
 
         // 如果是子节点，y 位置下移 30；如果是父节点，高度增加 30
         const adjustedY = parentId ? (node.y || 0) + 30 : node.y || 0
         const adjustedHeight = isParent ? (node.height || 0) + 30 : node.height
+
+        let sourcePosition, targetPosition
+
+        if (originalNode?.parentNode) {
+            // 子节点固定方向
+            targetPosition = Position.Left
+            sourcePosition = Position.Right
+        } else {
+            // 父节点按 direction 设置
+            targetPosition = isHorizontal ? Position.Left : Position.Top
+            sourcePosition = isHorizontal ? Position.Right : Position.Bottom
+        }
 
         if (node.id !== 'root') {
             flatNodes.push({
@@ -103,9 +114,13 @@ export async function layoutWithElk(nodes: FlowNode[], edges: FlowEdge[],findNod
                 position: { x: node.x || 0, y: adjustedY },
                 width: node.width,
                 height: adjustedHeight,
-                parentNode: parentId
+                parentNode: parentId,
+                sourcePosition,
+                targetPosition,
             })
         }
+
+
 
         if (node.children) {
             node.children.forEach((child: any) => {

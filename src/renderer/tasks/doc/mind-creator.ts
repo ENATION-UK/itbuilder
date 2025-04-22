@@ -23,7 +23,7 @@ export class MindCreator extends Task {
                 try {
                     observer.next("\n开始生成脑图");
 
-                    const requirement = await this.readResult('req-analysis.txt');
+                    const requirement = await this.readResult('prd.txt');
 
                     const sysPrompt = await this.readPrompt('mind.txt');
 

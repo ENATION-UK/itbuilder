@@ -24,30 +24,15 @@ export class FlowCreator extends Task {
             (async () => {
                 try {
                     observer.next("\n开始生成流程图");
-
-                    const requirement = await this.readResult('req-json.txt');
-                    const jsonData = JSON.parse(requirement);
-
-                    const modules: Module[] = jsonData.map((m: any) =>
-                        new Module(
-                            m.moduleName,
-                            m.functions.map((f: any) =>
-                                new ModuleFunction(f.functionName, f.functionDescription, f.userInteraction)
-                            )
-                        )
-                    );
-
-
+                    const modules: string[] = await this.getModules();
                     for (const module of modules) {
-                        observer.next(`\n开始设计[${module.moduleName}]流程`);
+                        observer.next(`\n开始设计[${module}]流程`);
+                        const prd = await this.readResult('modules/' + module + '/prd.txt')
 
-                        for (const functionDef of module.functions) {
-                            let reqText = `# ${module.moduleName}\n`;
-                            reqText += functionDef.toDetail() + "\n";
 
                             const sysPrompt = await this.readPrompt('flow.txt');
 
-                            const response = await streamChat(sysPrompt, reqText);
+                            const response = await streamChat(sysPrompt, prd);
                             let apiResult = '';
 
                             for await (const content of response) {
@@ -55,9 +40,9 @@ export class FlowCreator extends Task {
                                 observer.next(content);
                             }
 
-                            const resultFileName = `flow/${module.moduleName}/${functionDef.functionName}.txt`;
+                            const resultFileName = `modules/${module}/flow.txt`;
                             await this.writeResult(resultFileName, apiResult);
-                        }
+
                     }
 
                     observer.next("\n流程图完成");

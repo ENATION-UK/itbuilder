@@ -1,11 +1,15 @@
 import {forkJoin, merge, mergeMap, Observable, shareReplay} from "rxjs";
 import {ElectronAPI} from "../utils/electron-api";
 import type {ITaskGraph, TaskNode} from "./ITaskGraph";
+import { useTaskStore } from '../stores/useTaskStore'
+
 
 export class TaskScheduler {
     private tasks = new Map<string, ITask>();
     private taskResults = new Map<string, Observable<{ name: string; output: string }>>();
-    private completedTasks = new Set<string>(); // 存储已完成任务
+    private completedTasks = useTaskStore(); // 存储已完成任务
+
+
     private readonly STATUS_FILE = "status.json";
     private taskGraph: ITaskGraph;
     private requirement: Requirement;
@@ -17,6 +21,7 @@ export class TaskScheduler {
             this.tasks.set(task.id(), task)
         });
         this.taskGraph = taskGraph;
+
     }
 
     findNode(taskName: string): TaskNode | undefined {
@@ -100,12 +105,13 @@ export class TaskScheduler {
             return this.taskResults.get(task.id())!;
         }
 
-        this.updateNodeStatus(task.id(), "running")
-        console.log(`执行 ${task.id()}: running`);
+
 
         let execution$: Observable<{ name: string; output: string }>;
 
         if (task.dependencies().every(dep => this.completedTasks.has(dep))) {
+            this.updateNodeStatus(task.id(), "running")
+            console.log(`执行 ${task.id()}: running`);
             console.log(` ${task.id()}所有依赖都已完成`);
 
             // 依赖已完成，执行本任务
@@ -133,7 +139,10 @@ export class TaskScheduler {
             execution$ = dependencies$.pipe(
                 mergeMap(() =>
                     new Observable<{ name: string; output: string }>(observer => {
+                        this.updateNodeStatus(task.id(), "running")
+
                         task.execute().subscribe({
+
                             next: output => observer.next({name: task.id(), output}),
                             complete: async () => {
                                 this.completedTasks.add(task.id());

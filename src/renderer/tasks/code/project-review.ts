@@ -1,9 +1,8 @@
 import {Task} from "../../types/ITask";
 import {Observable} from "rxjs";
-import {ipcRenderer} from "electron";
 import {ElectronAPI} from "../../utils/electron-api";
 import {fix} from "../../utils/BugFix";
-import {CodeWrite} from "./code-write";
+
 
 
 export class ProjectReview extends Task {
@@ -26,7 +25,8 @@ export class ProjectReview extends Task {
         return new Observable<string>((observer) => {
             (async () => {
                 try {
-                    const maxTries = 20;
+                    const modules = await this.getModules();
+                    const maxTries = 20*modules.length;
 
                     for (let i = 0; i <= maxTries; i++) {
 
@@ -56,7 +56,10 @@ ${standard}
                             await fix(bug)
                         }
                     }
+
                     observer.next("\n执行bug fix完成");
+
+
                     observer.complete();
 
                 } catch (error) {

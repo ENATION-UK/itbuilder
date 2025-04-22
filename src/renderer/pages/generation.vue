@@ -8,6 +8,7 @@ import TaskNodeView from './task-node.vue'
 
 
 import {useTaskGraph} from '../utils/taskLoader'
+
 const props = defineProps<{
   name: string;
   id: string;
@@ -22,51 +23,53 @@ const {
   updateLog,
   isRunning,
   stop,
+  logVisible,
+    run
 } = useTaskGraph(props.name, props.id);
 
 // 构建任务图并自动布局
 buildGraph();
-console.log(nodes.value);
+
 </script>
 
 
 <template>
 
-  <VueFlow v-model:nodes="nodes" v-model:edges="edges" class="flow-container" @nodes-initialized="layoutGraph('RIGHT')"   fit-view-on-init elevate-edges-on-select  >
+  <VueFlow id="test" v-model:nodes="nodes" v-model:edges="edges" class="flow-container" @nodes-initialized="layoutGraph('RIGHT')"   fit-view-on-init elevate-edges-on-select  >
     <template #node-task="props">
       <TaskNodeView v-bind="props"/>
     </template>
 
-<!--        <Panel class="process-panel" position="top-right">-->
-<!--          <div class="layout-panel">-->
-<!--            <button v-if="isRunning" class="stop-btn" title="stop" @click="stop">-->
-<!--              <Icon name="stop"/>-->
-<!--              <span class="spinner"/>-->
-<!--            </button>-->
-<!--            <button v-else title="start" @click="run()">-->
-<!--              <Icon name="play"/>-->
-<!--            </button>-->
-<!--            <button title="log" @click="logVisible = true">-->
-<!--              <Icon name="log"/>-->
-<!--            </button>-->
-<!--            <button title="set horizontal layout" @click="layoutGraph('RIGHT')">-->
-<!--              <Icon name="horizontal"/>-->
-<!--            </button>-->
+        <Panel class="process-panel" position="top-right">
+          <div class="layout-panel">
+            <button v-if="isRunning" class="stop-btn" title="stop" @click="stop">
+              <Icon name="stop"/>
+              <span class="spinner"/>
+            </button>
+            <button v-else title="start" @click="run()">
+              <Icon name="play"/>
+            </button>
+            <button title="log" @click="logVisible = true">
+              <Icon name="log"/>
+            </button>
+            <button title="set horizontal layout" @click="layoutGraph('RIGHT')">
+              <Icon name="horizontal"/>
+            </button>
 
-<!--            <button title="set vertical layout" @click="layoutGraph('DOWN')">-->
-<!--              <Icon name="vertical"/>-->
-<!--            </button>-->
-<!--          </div>-->
+            <button title="set vertical layout" @click="layoutGraph('DOWN')">
+              <Icon name="vertical"/>
+            </button>
+          </div>
 
-<!--        </Panel>-->
+        </Panel>
   </VueFlow>
 
   <!-- 日志面板 -->
-<!--  <NDrawer v-model:show="logVisible" placement="bottom" height="500px">-->
-<!--    <NDrawerContent title="日志" style="width: 100%;height: 100%">-->
-<!--      <NLog :log="selectedLogs" style="width: 100%;;height: 100%" ref="logInstRef"/>-->
-<!--    </NDrawerContent>-->
-<!--  </NDrawer>-->
+  <NDrawer v-model:show="logVisible" placement="bottom" height="500px">
+    <NDrawerContent title="日志" style="width: 100%;height: 100%">
+      <NLog :log="selectedLogs" style="width: 100%;;height: 100%" ref="logInstRef"/>
+    </NDrawerContent>
+  </NDrawer>
 
 </template>
 
@@ -79,7 +82,9 @@ console.log(nodes.value);
   width: 100%;
 }
 
-
+.vue-flow__handle{
+  opacity: 0
+}
 .layout-flow {
   background-color: #1a192b;
   height: 100%;

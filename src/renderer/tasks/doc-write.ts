@@ -2,6 +2,7 @@ import {Task} from "../types/ITask";
 import {Observable} from "rxjs";
 import {MindCreator} from "./doc/mind-creator";
 import {FlowCreator} from "./doc/flow-creator";
+import {executeChildrenTasks} from "../utils/TaskUtil";
 
 
 export class DocWrite extends Task {
@@ -31,15 +32,19 @@ export class DocWrite extends Task {
         return new Observable<string>((observer) => {
             (async () => {
                 try {
-                    observer.next("\n开始生成脑图");
+                    observer.next("\n开始书写文档");
+                    const tasks = this.children();
+                    tasks.forEach((task) => {
+                        task.setRequirement(this.requirement);
+                    });
+                    await executeChildrenTasks(tasks, observer);
 
-
-                    observer.next("\n脑图完成");
+                    observer.next("\n文档书写完成");
                     observer.complete();
 
                 } catch (error) {
                     observer.error(error);
-                    observer.next("\n脑图设计出错");
+                    observer.next("\n文档书写出错");
                 } finally {
                     // 更新进度至100%
                 }

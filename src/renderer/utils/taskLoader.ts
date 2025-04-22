@@ -2,7 +2,8 @@
 import {ref, nextTick} from "vue";
 import {useVueFlow} from "@vue-flow/core";
 import {layoutWithElk} from "./elkLayout";
-import type {TaskNode, TaskEdge} from "../types/ITaskGraph";
+import type {TaskNode, TaskEdge, ITaskGraph} from "../types/ITaskGraph";
+import {TaskScheduler} from '../types/task-scheduler'
 
 const tasks = import.meta.glob('../tasks/*.{ts,js}', {eager: true});
 
@@ -43,8 +44,8 @@ export function useTaskGraph(projectName: string, id: string) {
     const isRunning = ref(false);
     const selectedLogs = ref('');
     const logInstRef = ref(null);
-
-    const {fitView,findNode} = useVueFlow();
+    const  logVisible = ref<boolean>(false);
+    const {fitView,findNode} = useVueFlow({id:"test"});
 
     const loadedTasks = loadInternalPlugins();
 
@@ -140,12 +141,44 @@ export function useTaskGraph(projectName: string, id: string) {
         });
     }
 
+    const requirement: Requirement = {
+        projectName,
+        id
+    };
+
+    let scheduler ;
+
     async function layoutGraph(direction:string) {
-        const result = await layoutWithElk(nodes.value, edges.value, findNode)
+        const result = await layoutWithElk(nodes.value, edges.value, findNode,direction)
         nodes.value = result.nodes
         edges.value = result.edges
+
+        let taskGraph: ITaskGraph = {
+            nodes: nodes.value,
+            edges: edges.value
+        }
+
+        scheduler = new TaskScheduler(requirement,loadedTasks, taskGraph);
+        scheduler.loadTaskStatus()
         nextTick(() => fitView());
     }
+
+
+
+    const run = () => {
+        isRunning.value = true;
+        logVisible.value=true;
+        scheduler.run().then(observable => {
+            observable.subscribe({
+                next: ({ output}) => updateLog( output),
+                complete: () => {
+                    isRunning.value = false;
+                    console.log("所有任务执行完成！");
+                },
+            });
+        });
+
+    };
 
     const stop = async () => {
         isRunning.value = false;
@@ -158,10 +191,7 @@ export function useTaskGraph(projectName: string, id: string) {
         });
     };
 
-    const requirement: Requirement = {
-        projectName,
-        id
-    };
+
 
     return {
         nodes,
@@ -174,6 +204,8 @@ export function useTaskGraph(projectName: string, id: string) {
         stop,
         updateLog,
         requirement,
-        loadedTasks
+        loadedTasks,
+        logVisible,
+        run
     };
 }

@@ -3,6 +3,7 @@ import {ElectronAPI} from '../utils/electron-api';
 import i18n from '../i18n';
 import {KeyManager} from '../utils/KeyManager'
 import {chat} from '../utils/ModelCall'
+import {Subscriber} from "rxjs/internal/Subscriber";
 
 // 基础任务类
 export abstract class Task implements ITask {
@@ -149,10 +150,9 @@ export abstract class Task implements ITask {
     }
 
 
+
     abstract id(): string;
     abstract name(): string;
-
-    protected outputStream = new Subject<string>(); // 用于流式输出
 
 
     // 任务执行逻辑 (需子类实现)

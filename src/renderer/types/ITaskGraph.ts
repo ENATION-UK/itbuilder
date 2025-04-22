@@ -9,6 +9,7 @@ export interface TaskNode {
     };
     type: 'task';
     style:object;
+    parentNode: string;
     sourcePosition: 'right'; // 右侧出线
     targetPosition: 'left'; // 左侧进线
 }

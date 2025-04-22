@@ -27,7 +27,7 @@ const icons = shallowRef([
   { component: Ai, route: '/ai', active: false },
   { component: DocumentOnePage20Regular, route: '/play', active: false },
   { component: Code20Regular, route: '/about', active: false },
-  { component: Flow20Regular, route: '/project/test4/generation/2', active: false },
+  { component: Flow20Regular, route: '/project/test4/generation/4', active: false },
   { component: Window16Regular, route: '/play/ui', active: false },
   { component: DocumentOnePage20Regular, route: '/play/doc', active: false },
   { component: Settings24Filled, route: '/settings', active: false },

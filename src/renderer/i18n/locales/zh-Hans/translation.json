@@ -1,5 +1,8 @@
 {
   "settings": "设置",
+  "ProjectInitGroup": {
+    "name": "初始化"
+  },
   "ProjectInit": {
     "name": "项目初始化"
   },
