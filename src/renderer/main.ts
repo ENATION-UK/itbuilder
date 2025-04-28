@@ -4,7 +4,13 @@ import naive from 'naive-ui';
 import router from './router'
 import i18n from './i18n'
 import { createPinia } from 'pinia'
+import mermaid from 'mermaid';
 
+mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    securityLevel: 'loose'
+});
 const app = createApp(App);
 app.use(naive);
 app.use(router)

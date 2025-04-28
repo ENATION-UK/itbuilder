@@ -13,6 +13,7 @@ const props = defineProps<{
   name: string;
   id: string;
 }>();
+const tasks: string[]= ['RequirementsAnalyst','ProjectInit','Architecture'];
 const {
   nodes,
   edges,

@@ -43,25 +43,28 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import {defineProps, onMounted} from 'vue';
 
 import {ref} from 'vue'
-import {ElectronAPI} from '../utils/electron-api';
+import {ElectronAPI} from '../../utils/electron-api';
 import { useRouter } from 'vue-router'
-let detailRef = ref<string>()
+import { useMenuStore } from '../../stores/useMenuStore'
+const menuStore = useMenuStore()
 
+let detailRef = ref<string>()
+const emit = defineEmits(['submit', 'cancel'])
 const props = defineProps<{
   name: string;
 }>();
+
 const router = useRouter()
 const goToGenerate = async () => {
 
   const nextSeq = await getNextRequirementDir(); // 获取下一个需求目录
   const filePath = await ElectronAPI.pathJoin(props.name,"generation",  nextSeq.toString(), 'text-requirement.txt'); // 获取需求文件路径
   await ElectronAPI.writeUserFile(filePath, detailRef.value); // 保存需求内容
+  emit('submit',  nextSeq.toString())
 
-
-  await router.push(`/project/${props.name}/generation/${nextSeq}`)
 }
 
 // 获取下一个需求序号并创建对应的文件夹
@@ -73,16 +76,19 @@ const getNextRequirementDir = async () => {
       .sort((a, b) => a - b); // 按序号排序
 
   const nextSeq = sortedDirs.length > 0 ? sortedDirs[sortedDirs.length - 1] + 1 : 1; // 获取下一个序号
-  // const nextReqDir = await ElectronAPI.pathJoin(rootDir, nextSeq.toString()); // 生成下一个需求目录路径
-  // await ElectronAPI.writeUserFile(nextReqDir, ''); // 创建目录
   return   nextSeq;
 };
+
+onMounted(  () => {
+  menuStore.setForcedActiveIndex(0)
+
+})
 
 </script>
 
 <style scoped>
 .parent {
-  width: 80%;
+  width: 100%;
   align-items: center;
   justify-content: center;
 }

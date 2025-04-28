@@ -16,44 +16,69 @@
 </template>
 
 <script setup lang="ts">
-import {ref, shallowRef, watchEffect} from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { Code20Regular, Window16Regular, DocumentOnePage20Regular,Settings24Filled,Flow20Regular } from '@vicons/fluent'
+import { ref, shallowRef,watchEffect,watch} from 'vue'
+import { useRoute,useRouter } from 'vue-router'
+import {  Window16Regular, DocumentOnePage20Regular,Settings24Filled,Flow20Regular } from '@vicons/fluent'
 import { ArrowBackCircle } from '@vicons/ionicons5'
 import Ai from '../assets/AI.svg'
+import { useMenuStore } from '../stores/useMenuStore'
+const router = useRouter()
+const route = useRoute()
+const menuStore = useMenuStore()
+
+const name = route.params.name as string | undefined
+const id = route.params.id as string | undefined
+
 
 // 使用 ref 包裹 icons
 const icons = shallowRef([
-  { component: Ai, route: '/ai', active: false },
+  { component: Ai, route: `/project/${name}/ai`, active: false },
   { component: DocumentOnePage20Regular, route: '/play', active: false },
-  { component: Code20Regular, route: '/about', active: false },
-  { component: Flow20Regular, route: '/project/test4/generation/4', active: false },
-  { component: Window16Regular, route: '/play/ui', active: false },
-  { component: DocumentOnePage20Regular, route: '/play/doc', active: false },
+  { component: Flow20Regular, route: `/project/${name}/generation/${id}`, active: false },
+  { component: Window16Regular, route: `/project/${name}/flow`, active: false },
+  { component: DocumentOnePage20Regular, route: `/project/${name}/doc`, active: false },
   { component: Settings24Filled, route: '/settings', active: false },
   { component: ArrowBackCircle, route: '/', active: false },
 ])
 
-// 路由管理
-const router = useRouter()
-const route = useRoute() // 获取当前路由信息
+
 
 // 设置默认的 activeIndex
 const activeIndex = ref(0)
 
 // 路由跳转
 const navigateTo = (index: number) => {
-
-
   activeIndex.value = index
+  menuStore.setForcedActiveIndex(index) // 顺便同步一下
+
   router.push(icons.value[index].route)
 }
 
+// 监听 forcedActiveIndex
+watch(() => menuStore.forcedActiveIndex, (newVal) => {
+  if (newVal !== null) {
+    activeIndex.value = newVal
+  }
+})
+
 // 监听路由变化，更新 actived 状态
 watchEffect(() => {
-  const currentRoute = route.path // 获取当前的路由路径
-  icons.value.forEach(icon => {
-    icon.active = currentRoute === icon.route
+  const currentPath = route.path
+
+  icons.value = icons.value.map((icon, index) => {
+    const resolved = router.resolve(icon.route)
+
+    if (menuStore.forcedActiveIndex !== null) {
+      return {
+        ...icon,
+        active: index === menuStore.forcedActiveIndex,
+      }
+    } else {
+      return {
+        ...icon,
+        active: currentPath === resolved.path,
+      }
+    }
   })
 })
 </script>

@@ -2,6 +2,11 @@ import {forkJoin, mergeMap, Observable, Observer, shareReplay} from "rxjs";
 import {useVueFlow} from "@vue-flow/core";
 import { useTaskStore } from '../stores/useTaskStore'
 
+export function extractCode (text: string): string | null {
+    const regex = /```(?:\w+)?\n(.*?)```/s;  // (?s) 等价于 /s 标志，允许 . 匹配换行符
+    const match = text.match(regex);
+    return match ? match[1] : text;
+}
 
 export async function executeChildrenTasks(
     children: ITask[],

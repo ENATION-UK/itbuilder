@@ -53,6 +53,7 @@
     "@vue-flow/core": "^1.42.5",
     "electron-squirrel-startup": "^1.0.1",
     "elkjs": "^0.10.0",
+    "mermaid": "^11.6.0",
     "naive-ui": "^2.41.0",
     "openai": "^4.89.0",
     "pinia": "^3.0.2",

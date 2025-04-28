@@ -8,15 +8,28 @@ const router = createRouter({
       name: 'home',
       component: () => import('../pages/home.vue'),
     },
+
     {
       path: '/project/:name',
       name: 'project',
       component: () => import('../pages/project.vue'),
       children: [
         {
-          path: 'ai/',
+          path: 'action/:type',
+          name: 'action',
+          component: () => import('../pages/ActionPage.vue'),
+          props: true
+        },
+        {
+          path: 'ai',
           name: 'ai',
-          component: () => import('../components/ai.vue'),
+          component: () => import('../pages/ai.vue'),
+          props:true
+        },
+        {
+          path: 'doc',
+          name: 'doc',
+          component: () => import('../pages/doc.vue'),
           props:true
         },
         {

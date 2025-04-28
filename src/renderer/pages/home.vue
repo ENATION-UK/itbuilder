@@ -85,7 +85,9 @@ const goDetail= (project) => {
 };
 
 const goPlay= () => {
-  router.push(`/play`)
+  // router.push(`/play`)
+  router.push({ name: 'action', params: { type: "TEXT_INPUT",name:'abc'} })
+
 };
 
 

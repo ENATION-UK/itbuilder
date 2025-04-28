@@ -15,6 +15,12 @@ declare interface ITask  {
     children(): ITask[];
 }
 
+declare interface Action{
+    type: string,
+    name: string,
+    component: () => Promise<any>
+}
+
 declare interface Project{
     name: string;
     requirement: string;
