@@ -15,6 +15,15 @@ declare interface ITask  {
     children(): ITask[];
 }
 
+interface AIFlow {
+    id: string;
+    name: string;
+    tasks: string[];
+    description: string;
+    action: Action;
+    diagram?: string;
+}
+
 declare interface Action{
     type: string,
     name: string,

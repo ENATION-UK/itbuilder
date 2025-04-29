@@ -19,6 +19,15 @@ export const ElectronAPI = {
             type: file.type,
         }));
     },
+
+    listFolder: async (folderPath: string): Promise<FileInfo[]> => {
+        const rawFileInfo = await window.electronAPI.listFolder(folderPath);
+        return rawFileInfo.map((file: any) => ({
+            name: file.name,
+            path: file.path,
+            type: file.type,
+        }));
+    },
     getAppPath: (): Promise<string> => window.electronAPI.getAppPath(),
     getUserDataPath: (): Promise<string> => window.electronAPI.getUserDataPath(),
     pathJoin: (...paths: string[]):  Promise<string> => window.electronAPI.pathJoin(...paths),

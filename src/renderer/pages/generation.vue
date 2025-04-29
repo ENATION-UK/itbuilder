@@ -1,19 +1,24 @@
 <script setup lang="ts">
-
 import {Panel, VueFlow, useVueFlow} from "@vue-flow/core";
 import {ref, nextTick, defineProps} from "vue";
-
 import Icon from './Icon.vue'
 import TaskNodeView from './task-node.vue'
-
-
 import {useTaskGraph} from '../utils/taskLoader'
-
+import {useFlowStore} from '../stores/useFlowStore'
+import {flows} from '../ai-flow'
 const props = defineProps<{
   name: string;
   id: string;
 }>();
-const tasks: string[]= ['RequirementsAnalyst','ProjectInit','Architecture'];
+
+const flowStore = useFlowStore()
+const currentFlowId = flowStore.currentFlowId
+
+const aiFlow = flows.find(flow => flow.id === currentFlowId);
+if (!aiFlow) {
+  console.error('No flow found with id: ' + currentFlowId)
+}
+
 const {
   nodes,
   edges,
@@ -26,7 +31,7 @@ const {
   stop,
   logVisible,
     run
-} = useTaskGraph(props.name, props.id);
+} = useTaskGraph(props.name, props.id,aiFlow?.tasks);
 
 // 构建任务图并自动布局
 buildGraph();
@@ -36,7 +41,7 @@ buildGraph();
 
 <template>
 
-  <VueFlow id="test" v-model:nodes="nodes" v-model:edges="edges" class="flow-container" @nodes-initialized="layoutGraph('RIGHT')"   fit-view-on-init elevate-edges-on-select  >
+  <VueFlow id="test" v-if="aiFlow" v-model:nodes="nodes" v-model:edges="edges" class="flow-container" @nodes-initialized="layoutGraph('RIGHT')"   fit-view-on-init elevate-edges-on-select  >
     <template #node-task="props">
       <TaskNodeView v-bind="props"/>
     </template>
@@ -64,7 +69,9 @@ buildGraph();
 
         </Panel>
   </VueFlow>
-
+  <n-alert   v-if="!aiFlow" title="Error" type="error">
+    No flow found with id: {{currentFlowId}}
+  </n-alert>
   <!-- 日志面板 -->
   <NDrawer v-model:show="logVisible" placement="bottom" height="500px">
     <NDrawerContent title="日志" style="width: 100%;height: 100%">

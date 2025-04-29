@@ -33,6 +33,12 @@ const router = createRouter({
           props:true
         },
         {
+          path: 'code',
+          name: 'code',
+          component: () => import('../pages/code.vue'),
+          props:true
+        },
+        {
           path: 'generation/:id',
           name: 'project-generation',
           component: () => import('../pages/generation.vue'),
