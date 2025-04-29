@@ -11,16 +11,17 @@
 
 <script setup lang="ts">
 import {useRouter} from 'vue-router'
-
-const {action} = defineProps<{
-  action: Action
+import {useFlowStore} from '../../stores/useFlowStore'
+const props= defineProps<{
+  action: Action,
+  flowId: string
 }>()
 
 const router = useRouter()
-
+const flowStore = useFlowStore()
 
 const startAction = () => {
-
-  router.push({name: 'action', params: {type: action.type}})
+  flowStore.setFlowId(props.flowId)
+  router.push({name: 'action', params: {type: props.action.type}})
 }
 </script>

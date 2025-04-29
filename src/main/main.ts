@@ -2,7 +2,7 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import fs from "fs";
-import { spawn } from "child_process";
+import {spawn} from "child_process";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -187,6 +187,29 @@ ipcMain.handle('write-user-file', async (event, filePath, content) => {
         throw error;
     }
 });
+
+ipcMain.handle('list-folder', async (event, folderPath: string) => {
+    try {
+        // 读取目标文件夹下的文件
+        const files = fs.readdirSync(folderPath);
+
+        // 返回每个文件的名称和类型（文件或文件夹）
+        return files.map(file => {
+            const fullPath = path.join(folderPath, file);
+            const stats = fs.statSync(fullPath); // 获取文件信息
+
+            return {
+                name: file,
+                path: fullPath,
+                type: stats.isDirectory() ? 'directory' : 'file',
+            };
+        });
+    } catch (error) {
+        console.error('Error reading folder:', error);
+        throw error;
+    }
+});
+
 
 ipcMain.handle('list-user-folder', async (event, folderPath: string) => {
     try {

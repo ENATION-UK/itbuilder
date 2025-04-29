@@ -21,6 +21,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
     listUserFolder: (folderPath: string) => ipcRenderer.invoke('list-user-folder', folderPath),
 
+    listFolder: (folderPath: string) => ipcRenderer.invoke('list-folder', folderPath),
+
     // 获取 Electron 应用目录
     getAppPath: () => ipcRenderer.invoke('get-app-path'),
     // 判断文件是否存在

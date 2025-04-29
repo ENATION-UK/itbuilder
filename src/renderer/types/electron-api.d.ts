@@ -8,6 +8,7 @@ interface ElectronAPI {
     createUserFolder: (folderPath: string) => Promise<string>;
     userFileExists: (filePath: string) => Promise<boolean>;
     listUserFolder: (folderPath: string) => Promise<FileInfo[]>;
+    listFolder: (folderPath: string) => Promise<FileInfo[]>;
     getAppPath: () => Promise<string>;
     getUserDataPath: () => Promise<string>;
     pathJoin: (...paths: string[]) =>  Promise<string>;

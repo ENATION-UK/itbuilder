@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import Menu from './menu.vue'
+import Menu from './component/menu.vue'
 </script>
 
 <style lang="scss" scoped>

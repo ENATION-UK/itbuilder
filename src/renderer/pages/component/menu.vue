@@ -18,10 +18,10 @@
 <script setup lang="ts">
 import { ref, shallowRef,watchEffect,watch} from 'vue'
 import { useRoute,useRouter } from 'vue-router'
-import {  Window16Regular, DocumentOnePage20Regular,Settings24Filled,Flow20Regular } from '@vicons/fluent'
+import {  Window16Regular, DocumentOnePage20Regular,Settings24Filled,Flow20Regular,Code20Filled } from '@vicons/fluent'
 import { ArrowBackCircle } from '@vicons/ionicons5'
-import Ai from '../assets/AI.svg'
-import { useMenuStore } from '../stores/useMenuStore'
+import Ai from '../../assets/AI.svg'
+import { useMenuStore } from '../../stores/useMenuStore'
 const router = useRouter()
 const route = useRoute()
 const menuStore = useMenuStore()
@@ -33,9 +33,8 @@ const id = route.params.id as string | undefined
 // 使用 ref 包裹 icons
 const icons = shallowRef([
   { component: Ai, route: `/project/${name}/ai`, active: false },
-  { component: DocumentOnePage20Regular, route: '/play', active: false },
   { component: Flow20Regular, route: `/project/${name}/generation/${id}`, active: false },
-  { component: Window16Regular, route: `/project/${name}/flow`, active: false },
+  { component: Code20Filled, route: `/project/${name}/code`, active: false },
   { component: DocumentOnePage20Regular, route: `/project/${name}/doc`, active: false },
   { component: Settings24Filled, route: '/settings', active: false },
   { component: ArrowBackCircle, route: '/', active: false },
