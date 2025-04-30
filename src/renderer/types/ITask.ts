@@ -41,6 +41,10 @@ export abstract class Task implements ITask {
         return await ElectronAPI.writeUserFile(resultPath, content);
     }
 
+    async writeProjectResult(resultPath: string, content: string): Promise<string> {
+        resultPath=await ElectronAPI.pathJoin(this.requirement.projectName, resultPath)
+        return await ElectronAPI.writeUserFile(resultPath, content);
+    }
 
      extractCode(text: string): string | null {
         const regex = /```(?:\w+)?\n(.*?)```/s;  // (?s) 等价于 /s 标志，允许 . 匹配换行符

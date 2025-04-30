@@ -4,33 +4,38 @@
       <h2>{{ module }}</h2>
       <div :id="`mermaid-container-${module}`" class="mermaid-container">
         <div v-if="errors[module]" class="error-message">
-          <p>❌ 渲染失败：{{ errors[module] }}</p>
+          <p>渲染失败：{{ errors[module] }}</p>
           <a href="#" @click.prevent="editMermaid(module)">✏️ 编辑 Mermaid 源码</a>
         </div>
       </div>
     </div>
   </div>
 </template>
-<script setup>
-import { onMounted, nextTick, ref } from 'vue'
+<script setup  lang="ts">
+import {onMounted, nextTick, ref, defineProps} from 'vue'
 import mermaid from 'mermaid'
 import { extractCode } from '../utils/TaskUtil'
 import { ElectronAPI } from '../utils/electron-api'
+import {getProjectPath} from "../utils/project";
+const props = defineProps<{
+  name: string
+}>();
 
 const modules = ref([])
-const errors = ref({}) // 存储每个模块的错误信息
+const errors = ref({})
+
 
 async function  getModules()   {
-  const moduleFolderPath=await ElectronAPI.pathJoin("test4", "modules")
-
-  const folders = await ElectronAPI.listUserFolder(moduleFolderPath);
+  const projectFolderPath=await getProjectPath(props.name);
+  const moduleFolderPath=await ElectronAPI.pathJoin(projectFolderPath, "modules")
+  const folders = await ElectronAPI.listFolder(moduleFolderPath);
 
   return folders.filter((folder) => folder.type === 'directory').map((folder) => folder.name)
 }
 
 // 点击“编辑”按钮
 function editMermaid(moduleName) {
-  const filePath = `test4/modules/${moduleName}/flow.txt`
+  const filePath = `${props.name}/modules/${moduleName}/flow.txt`
   ElectronAPI.openUserFile(filePath)
 }
 
@@ -45,7 +50,7 @@ onMounted(async () => {
   await nextTick()
 
   for (const moduleName of modules.value) {
-    const filePath = `test4/modules/${moduleName}/flow.txt`
+    const filePath = `${props.name}/modules/${moduleName}/flow.txt`
     const containerId = `mermaid-container-${moduleName}`
     const container = document.getElementById(containerId)
 

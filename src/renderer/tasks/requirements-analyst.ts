@@ -36,6 +36,7 @@ export class RequirementsAnalyst extends Task {
                     }
 
                     await this.writeResult('prd.txt', analysisResult);
+                    await this.writeProjectResult('prd.txt', analysisResult);
 
                     // const analysisResult = await this.readResult('prd.txt');
                     //把需求汇总出模块
@@ -51,8 +52,16 @@ export class RequirementsAnalyst extends Task {
                     for (const module of modules) {
                             const moduleFolderPath = await ElectronAPI.pathJoin(this.requirement.projectName,"generation",this.requirement.id,"modules",module);
                             await ElectronAPI.createUserFolder(moduleFolderPath)
+
+                            //项目中写一份
+                            const moduleFolderPath1 = await ElectronAPI.pathJoin(this.requirement.projectName,"modules",module);
+                            await ElectronAPI.createUserFolder(moduleFolderPath1)
+
                             const prdText = await chat(textPickPrompt, analysisResult+'\n# 提取模块:'+ module);
+
+                            //项目中写一份
                             await ElectronAPI.writeUserFile(moduleFolderPath + '/prd.txt', prdText)
+                            await ElectronAPI.writeUserFile(moduleFolderPath1 + '/prd.txt', prdText)
 
                     }
 

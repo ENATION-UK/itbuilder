@@ -39,6 +39,7 @@ export class DefiningStandards extends Task {
                     }
 
                     await this.writeResult('standard.txt', standardResult);
+                    await this.writeProjectResult('standard.txt', standardResult);
 
                     observer.next("\napi设计完成");
                     observer.complete();

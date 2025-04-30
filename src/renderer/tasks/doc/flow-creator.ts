@@ -42,6 +42,7 @@ export class FlowCreator extends Task {
 
                             const resultFileName = `modules/${module}/flow.txt`;
                             await this.writeResult(resultFileName, apiResult);
+                            await this.writeProjectResult(resultFileName, apiResult);
 
                     }
 

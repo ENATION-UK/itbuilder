@@ -28,12 +28,10 @@ import {ref, onMounted, defineProps} from 'vue'
 import { NTree } from 'naive-ui'
 import MonacoEditor from './component/MonacoEditor.vue'
 import {ElectronAPI} from "../utils/electron-api";
+import {getProjectPath} from "../utils/project";
 const props = defineProps<{
   name: string;
-  id: string;
 }>();
-
-
 
 interface TreeNode {
   label: string
@@ -155,10 +153,19 @@ function detectLanguage(filePath: string): string {
 
 // 🚀 挂载时加载根目录
 onMounted(async () => {
-  ElectronAPI.pathJoin(props.name)
-  const moduleFolderPath=await ElectronAPI.pathJoin(props.name,"project")
+  let projectFolderPath=await getProjectPath(props.name);
+   projectFolderPath = await ElectronAPI.pathJoin(projectFolderPath,"project");
+  treeData.value = await loadFolder(projectFolderPath)
+})
 
-  treeData.value = await loadFolder('/Users/wangfeng/Library/Application Support/itBuilder/Projects/test4/project')
+// 可加在 main.ts 中屏蔽 ResizeObserver 报错
+window.addEventListener('error', (e) => {
+
+  if (e.message.includes('ResizeObserver')) {
+    // 阻止默认行为
+    e.stopImmediatePropagation();
+    e.preventDefault();
+  }
 })
 </script>
 
@@ -175,6 +182,8 @@ onMounted(async () => {
 .editor-container {
   flex: 1;
   padding: 8px;
+  height: 100%;
+  width: 100%;
   overflow: hidden;
 }
 </style>

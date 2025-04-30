@@ -40,6 +40,13 @@ onMounted(() => {
       const value = editor?.getValue() || ''
       emit('update:modelValue', value)
     })
+
+    // 关键点：延迟两层再触发 layout
+    setTimeout(() => {
+      requestAnimationFrame(() => {
+        editor?.layout()
+      })
+    }, 0)
   }
 })
 

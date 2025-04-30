@@ -39,6 +39,7 @@ export class MindCreator extends Task {
                     const text =  await this.extractCode(mindResult);  // 这里直接解析成JSON对象
 
                     await this.writeResult('mind.txt', text);
+                    await this.writeProjectResult('mind.txt', text);
 
                     observer.next("\n脑图完成");
                     observer.complete();

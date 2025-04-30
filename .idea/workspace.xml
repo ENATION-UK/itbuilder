@@ -5,20 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="442f6b45-8b01-432d-bb43-618b8be0203a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/renderer/utils/project.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prompts/api-dev.txt" beforeDir="false" afterPath="$PROJECT_DIR$/prompts/api-dev.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/playground.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/playground.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/api-developer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/api-developer.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/api-source-merge.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/backup/api-source-merge.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/api-source-writer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/backup/api-source-writer.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/code-review.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/children/code-review.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/code-write.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/children/code-write.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/project-review.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/children/project-review.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/types/task-scheduler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/types/task-scheduler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/pages/code.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/code.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/pages/component/MonacoEditor.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/component/MonacoEditor.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/pages/component/menu.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/component/menu.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/pages/doc.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/doc.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/architecture/database-design.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/architecture/database-design.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/architecture/defining-standards.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/architecture/defining-standards.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/doc/flow-creator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/doc/flow-creator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/doc/mind-creator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/doc/mind-creator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/requirements-analyst.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/requirements-analyst.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/types/ITask.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/types/ITask.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/utils/useLayout.ts" beforeDir="false" />
     </list>
-    <list id="88a8f95a-d124-4e96-8a6d-03fe74f5b9db" name="ingore" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list id="88a8f95a-d124-4e96-8a6d-03fe74f5b9db" name="ingore" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,23 +40,6 @@
   <component name="GoVcsConfiguration">
     <option name="GO_FMT" value="false" />
   </component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/.idea/workspace.xml">
-      <ranges>
-        <range start1="7" end1="19" start2="7" end2="7" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
-        <range start1="20" end1="27" start2="8" end2="9" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
-        <range start1="28" end1="30" start2="10" end2="10" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
-        <range start1="31" end1="46" start2="11" end2="20" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
-        <range start1="47" end1="48" start2="21" end2="21" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
-        <range start1="67" end1="67" start2="40" end2="57" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
-        <range start1="117" end1="117" start2="107" end2="109" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
-        <range start1="143" end1="144" start2="135" end2="136" changelist="442f6b45-8b01-432d-bb43-618b8be0203a" />
-        <range start1="193" end1="194" start2="185" end2="210" changelist="88a8f95a-d124-4e96-8a6d-03fe74f5b9db" />
-        <range start1="199" end1="199" start2="215" end2="226" changelist="88a8f95a-d124-4e96-8a6d-03fe74f5b9db" />
-        <range start1="208" end1="209" start2="235" end2="239" changelist="88a8f95a-d124-4e96-8a6d-03fe74f5b9db" />
-      </ranges>
-    </file>
-  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -69,32 +54,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "git-widget-placeholder": "main",
-    "go.import.settings.migrated": "true",
-    "js.last.introduce.type": "CONST",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/wangfeng/opensource/github/itbuilder/prompts",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "yarn",
-    "settings.editor.selected.configurable": "MavenSettings",
-    "ts.external.directory.path": "/Users/wangfeng/opensource/github/itbuilder/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;js.last.introduce.type&quot;: &quot;CONST&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/wangfeng/opensource/github/itbuilder/prompts&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/wangfeng/opensource/github/itbuilder/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "vue.recent.templates": [
-      "Vue Composition API Component"
+  &quot;keyToStringList&quot;: {
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/prompts" />

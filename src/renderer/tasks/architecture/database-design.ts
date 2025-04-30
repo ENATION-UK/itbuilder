@@ -43,6 +43,7 @@ export class DatabaseDesign extends Task {
                     //写入数据库设计结果
                     const sql = await this.extractCode(ddlResult);
                     await this.writeResult('ddl.txt', sql);
+                    await this.writeProjectResult('ddl.txt', sql);
                     // const sql = await this.readResult('ddl.txt');
 
                     //为每个模块写入数据库设计结果
@@ -63,6 +64,7 @@ export class DatabaseDesign extends Task {
                             observer.next(content);
                         }
                         await this.writeResult(`modules/${module}/ddl.txt`, ddlResult);
+                        await this.writeProjectResult(`modules/${module}/ddl.txt`, ddlResult);
                     }
 
 

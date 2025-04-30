@@ -33,7 +33,6 @@ const id = route.params.id as string | undefined
 // 使用 ref 包裹 icons
 const icons = shallowRef([
   { component: Ai, route: `/project/${name}/ai`, active: false },
-  { component: Flow20Regular, route: `/project/${name}/generation/${id}`, active: false },
   { component: Code20Filled, route: `/project/${name}/code`, active: false },
   { component: DocumentOnePage20Regular, route: `/project/${name}/doc`, active: false },
   { component: Settings24Filled, route: '/settings', active: false },
