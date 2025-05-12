@@ -1,3 +1,5 @@
+import {SearchResult} from "hnswlib-node";
+
 export const ElectronAPI = {
     readFile: (filePath: string): Promise<string> => window.electronAPI.readFile(filePath),
     writeFile: (filePath: string, content: string): Promise<string> => window.electronAPI.writeFile(filePath, content),
@@ -28,8 +30,13 @@ export const ElectronAPI = {
             type: file.type,
         }));
     },
+    selectFolder: (): Promise<string> => window.electronAPI.selectFolder(),
     getAppPath: (): Promise<string> => window.electronAPI.getAppPath(),
     getUserDataPath: (): Promise<string> => window.electronAPI.getUserDataPath(),
-    pathJoin: (...paths: string[]):  Promise<string> => window.electronAPI.pathJoin(...paths),
-    runMavenCommand:(args: string[], cwd?: string): Promise<string> => window.electronAPI.runMavenCommand( args, cwd)
-};
+    pathJoin: (...paths: string[]): Promise<string> => window.electronAPI.pathJoin(...paths),
+    runMavenCommand: (args: string[], cwd?: string): Promise<string> => window.electronAPI.runMavenCommand(args, cwd),
+    addVector: (id:number, vector:  number[]): Promise<boolean> => window.electronAPI.addVector(id, vector),
+    searchVector: ( vector:  number[],k:number): Promise<{ success: boolean; result: SearchResult }> => window.electronAPI.searchVector( vector,k),
+    saveIndex: (): Promise<boolean> => window.electronAPI.saveIndex(),
+    loadIndex: (): Promise<boolean> => window.electronAPI.loadIndex()
+}

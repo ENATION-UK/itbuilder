@@ -18,6 +18,7 @@
       <!-- 创建项目按钮 -->
       <n-button @click="openCreateProjectDialog">创建项目</n-button>
       <n-button @click="goPlay">play</n-button>
+      <n-button @click="goPlay1">play1</n-button>
 
       <!-- 创建项目对话框 -->
       <n-modal v-model:show="createProjectDialogVisible" title="创建项目">
@@ -85,9 +86,11 @@ const goDetail= (project) => {
 };
 
 const goPlay= () => {
-  // router.push(`/play`)
-  router.push({ name: 'action', params: { type: "TEXT_INPUT",name:'abc'} })
+  router.push(`/play`)
+};
 
+const goPlay1= () => {
+  router.push(`/play1`)
 };
 
 

@@ -3,7 +3,6 @@ import {ElectronAPI} from '../utils/electron-api';
 import i18n from '../i18n';
 import {KeyManager} from '../utils/KeyManager'
 import {chat} from '../utils/ModelCall'
-import {Subscriber} from "rxjs/internal/Subscriber";
 
 // 基础任务类
 export abstract class Task implements ITask {
@@ -69,6 +68,7 @@ export abstract class Task implements ITask {
         const sysPrompt = await this.readPrompt("code-analyst.txt");
         let jsonText =  await chat(sysPrompt, code);
         jsonText = await this.extractCode(jsonText);
+        console.log(jsonText);
         return JSON.parse(jsonText);
     }
 

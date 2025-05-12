@@ -95,9 +95,6 @@ export class ApiSourceWriter extends Task {
             observer.next(`写入${item.path}`);
         })
 
-
-
-
         await ElectronAPI.writeUserFile(apiCodesJsonPath, JSON.stringify(moduleInfos, null, 2));
 
     }

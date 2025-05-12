@@ -3,6 +3,7 @@ import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import fs from "fs";
 import {spawn} from "child_process";
+import './hnswlib-service';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -278,4 +279,16 @@ ipcMain.handle("run-mvn-command", async (_event, args: string[],cwd?: string) =>
             }
         });
     });
+});
+
+
+ipcMain.handle('dialog:select-folder', async () => {
+    const result = await dialog.showOpenDialog({
+        properties: ['openDirectory']
+    });
+    if (result.canceled) {
+        return null;
+    } else {
+        return result.filePaths[0]; // 返回选中的文件夹路径
+    }
 });

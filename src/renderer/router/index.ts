@@ -52,6 +52,11 @@ const router = createRouter({
       component: () => import('../pages/playground.vue'),
     },
     {
+      path: '/play1',
+      name: 'play1',
+      component: () => import('../pages/playground1.vue'),
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('../pages/about.vue'),

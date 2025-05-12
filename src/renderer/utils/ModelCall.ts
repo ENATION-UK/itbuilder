@@ -3,10 +3,46 @@ import {ChatCompletionMessage, ChatCompletionMessageParam} from 'openai/resource
 import {loadSettings, settings} from "./settings";
 import {KeyManager} from "./KeyManager";
 
+import {HierarchicalNSW} from "hnswlib-node";
 
-// 配置项
-const MODEL = "qwen-plus";
 const MAX_TOKENS = 8192;
+
+
+export async function getEmbedding(text: string): Promise<Array<number>> {
+    await loadSettings(); // 确保 settings 加载完成
+    const keyManager = new KeyManager(settings.apiKey);
+    const {client, release} = await keyManager.getClient();
+
+    try {
+        const embedding = await client.embeddings.create({
+            model: "text-embedding-v3",
+            input: text,
+        });
+        return embedding.data[0].embedding;
+    } finally {
+        release(); // 确保释放信号量
+    }
+}
+
+
+function cosineSimilarity(a, b) {
+    const dot = a.reduce((sum, ai, i) => sum + ai * b[i], 0);
+    const magA = Math.sqrt(a.reduce((sum, ai) => sum + ai * ai, 0));
+    const magB = Math.sqrt(b.reduce((sum, bi) => sum + bi * bi, 0));
+    return dot / (magA * magB);
+}
+
+
+export function findMostSimilar(queryVec, documentVectors, topK = 3) {
+    return documentVectors
+        .map(doc => ({
+            id: doc.id,
+            text: doc.text,
+            score: cosineSimilarity(queryVec, doc.embedding),
+        }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, topK);
+}
 
 /**
  * 处理 function call 并调用回调执行相应函数
@@ -28,9 +64,9 @@ export async function functionChat(
         // eslint-disable-next-line no-constant-condition
         while (true) {
             const response = await client.chat.completions.create({
-                model: MODEL,
+                model: settings.modelName,
                 messages: messages,
-                max_tokens: MAX_TOKENS,
+                max_tokens:  parseInt(settings.maxToken) || MAX_TOKENS,
                 functions: functions,
             });
 
@@ -75,7 +111,7 @@ export async function* streamChat(sysPrompt: string, userIdea: string): AsyncGen
             {role: 'user', content: userIdea}
         ],
         model: settings.modelName,
-        max_tokens: parseInt(settings.maxToken) || 2000,
+        max_tokens: parseInt(settings.maxToken) || MAX_TOKENS,
         temperature:  1.99,
         stream: true
     });
@@ -114,7 +150,7 @@ async function innerChat(sysPrompt: string, userIdea: string): Promise<string | 
                 {role: 'user', content: userIdea}
             ],
             model: settings.modelName,
-            max_tokens: parseInt(settings.maxToken) || 2000,
+            max_tokens:  parseInt(settings.maxToken) || MAX_TOKENS,
             temperature:  1.99,
         });
 

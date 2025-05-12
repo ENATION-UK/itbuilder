@@ -11,8 +11,13 @@ interface ElectronAPI {
     listFolder: (folderPath: string) => Promise<FileInfo[]>;
     getAppPath: () => Promise<string>;
     getUserDataPath: () => Promise<string>;
-    pathJoin: (...paths: string[]) =>  Promise<string>;
-    runMavenCommand:( args: string[], cwd?: string)=> Promise<string>
+    pathJoin: (...paths: string[]) => Promise<string>;
+    runMavenCommand: (args: string[], cwd?: string) => Promise<string>;
+    selectFolder: () => Promise<string>;
+    addVector: (id, vector) => Promise<boolean>;
+    searchVector: (vector, k) => Promise<{ success: boolean, result: SearchResult }>;
+    saveIndex: () => Promise<boolean>;
+    loadIndex: () => Promise<boolean>;
 }
 
 declare interface Window {

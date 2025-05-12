@@ -1,4 +1,9 @@
 import { defineConfig } from 'vite';
 
-// https://vitejs.dev/config
-export default defineConfig({});
+export default defineConfig({
+    build: {
+        rollupOptions: {
+            external: ['hnswlib-node'], // 👈 关键配置：排除原生模块
+        },
+    },
+});
