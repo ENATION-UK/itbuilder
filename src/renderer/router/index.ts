@@ -57,6 +57,16 @@ const router = createRouter({
       component: () => import('../pages/playground1.vue'),
     },
     {
+      path: '/play3',
+      name: 'play3',
+      component: () => import('../pages/task-run-test.vue'),
+    },
+    {
+      path: '/diff',
+      name: 'diff',
+      component: () => import('../pages/CodeDiff.vue'),
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('../pages/about.vue'),

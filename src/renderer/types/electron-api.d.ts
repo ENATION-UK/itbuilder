@@ -18,6 +18,11 @@ interface ElectronAPI {
     searchVector: (vector, k) => Promise<{ success: boolean, result: SearchResult }>;
     saveIndex: () => Promise<boolean>;
     loadIndex: () => Promise<boolean>;
+
+    // 数据库接口
+    runQuery: (sql: string, params?: any[] | Record<string, any>) => Promise<any>;
+    fetchAll: (sql: string, params?: any[] | Record<string, any>) => Promise<any[]>;
+    fetchOne: (sql: string, params?: any[] | Record<string, any>) => Promise<any>;
 }
 
 declare interface Window {

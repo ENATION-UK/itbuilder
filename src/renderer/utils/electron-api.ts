@@ -13,12 +13,18 @@ export const ElectronAPI = {
 
     userFileExists: (filePath: string): Promise<boolean> => window.electronAPI.userFileExists(filePath),
 
-    listUserFolder: async (folderPath: string): Promise<FileInfo[]> => {
+    listUserFolder: async (folderPath: string): Promise<{ name: any; path: any; type: any }[]> => {
         const rawFileInfo = await window.electronAPI.listUserFolder(folderPath);
         return rawFileInfo.map((file: any) => ({
             name: file.name,
             path: file.path,
             type: file.type,
+            isDirectory() {
+                return this.type === 'directory';
+            },
+            isFile() {
+                return this.type === 'file';
+            }
         }));
     },
 
@@ -28,6 +34,12 @@ export const ElectronAPI = {
             name: file.name,
             path: file.path,
             type: file.type,
+            isDirectory() {
+                return this.type === 'directory';
+            },
+            isFile() {
+                return this.type === 'file';
+            }
         }));
     },
     selectFolder: (): Promise<string> => window.electronAPI.selectFolder(),
@@ -38,5 +50,15 @@ export const ElectronAPI = {
     addVector: (id:number, vector:  number[]): Promise<boolean> => window.electronAPI.addVector(id, vector),
     searchVector: ( vector:  number[],k:number): Promise<{ success: boolean; result: SearchResult }> => window.electronAPI.searchVector( vector,k),
     saveIndex: (): Promise<boolean> => window.electronAPI.saveIndex(),
-    loadIndex: (): Promise<boolean> => window.electronAPI.loadIndex()
+    loadIndex: (): Promise<boolean> => window.electronAPI.loadIndex(),
+
+    // 数据库操作封装
+    runQuery: (sql: string, params?: any[] | Record<string, any>): Promise<any> =>
+        window.electronAPI.runQuery(sql, params),
+
+    fetchAll: (sql: string, params?: any[] | Record<string, any>): Promise<any[]> =>
+        window.electronAPI.fetchAll(sql, params),
+
+    fetchOne: (sql: string, params?: any[] | Record<string, any>): Promise<any> =>
+        window.electronAPI.fetchOne(sql, params),
 }

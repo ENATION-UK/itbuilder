@@ -5,27 +5,45 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="442f6b45-8b01-432d-bb43-618b8be0203a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/prompts/dir-desc.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/hnswlib-service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/pages/playground1.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/pages/playground3.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/tasks/scan-code.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/utils/code-analyst.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prompts/feature/architecture.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prompts/feature/code-change.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prompts/feature/feature-dev.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prompts/feature/folder-filter-step1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prompts/feature/folder-filter-step2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prompts/folder-analyst.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/database.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderer/pages/CodeDiff.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderer/pages/task-run-test.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderer/tasks/feature-dev.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderer/tasks/feature/architecture.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderer/tasks/feature/code-change.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderer/tasks/feature/folder-filter.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderer/tasks/scan-folder.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderer/utils/FolderScan.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderer/utils/SourceCodeSearch.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderer/utils/SourceFolderSearch.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prompts/code-analyst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/prompts/code-analyst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/hnswlib-service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/hnswlib-service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/main.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/preload.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/preload.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/actions/DirSelectAction.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/actions/DirSelectAction.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/pages/home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/home.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/pages/playground.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/playground.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/pages/playground1.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/playground1.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/pages/playground3.vue" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/router/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/backup/api-source-writer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/backup/api-source-writer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/tasks/scan-code.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/tasks/scan-code.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/types/ITask.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/types/ITask.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/types/electron-api.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/types/electron-api.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/types/global.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/types/global.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/utils/KeyManager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/utils/KeyManager.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/utils/ModelCall.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/utils/ModelCall.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/utils/electron-api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/utils/electron-api.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vite.main.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/vite.main.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vite.renderer.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/vite.renderer.config.ts" afterDir="false" />
     </list>
     <list id="88a8f95a-d124-4e96-8a6d-03fe74f5b9db" name="ingore" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -71,7 +89,7 @@
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;js.last.introduce.type&quot;: &quot;CONST&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/wangfeng/opensource/github/itbuilder/src/renderer/pages&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/wangfeng/opensource/github/itbuilder/src/renderer/utils&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -89,18 +107,18 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/renderer/pages" />
-      <recent name="$PROJECT_DIR$/prompts" />
       <recent name="$PROJECT_DIR$/src/renderer/utils" />
-      <recent name="$PROJECT_DIR$/mock" />
+      <recent name="$PROJECT_DIR$/src/renderer/tasks/feature" />
+      <recent name="$PROJECT_DIR$/prompts" />
       <recent name="$PROJECT_DIR$/src/renderer/tasks" />
+      <recent name="$PROJECT_DIR$/src/renderer/pages" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/prompts/feature" />
       <recent name="$PROJECT_DIR$/src/renderer/tasks" />
       <recent name="$PROJECT_DIR$/src/renderer/tasks/children" />
       <recent name="$PROJECT_DIR$/src/renderer/tasks/backup" />
       <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$/src/main" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -128,7 +146,8 @@
       <workItem from="1742544439051" duration="170750000" />
       <workItem from="1746700682466" duration="25594000" />
       <workItem from="1747021314089" duration="8144000" />
-      <workItem from="1747036971613" duration="2123000" />
+      <workItem from="1747036971613" duration="111004000" />
+      <workItem from="1747880289058" duration="4680000" />
     </task>
     <task id="LOCAL-00001" summary="🚀Refactor the packaging rules">
       <option name="closed" value="true" />
@@ -186,7 +205,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745982539046</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="✨Basic support for vector text">
+      <option name="closed" value="true" />
+      <created>1747039310562</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1747039310562</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -202,7 +229,8 @@
     <MESSAGE value="⬆️Divide into &quot;Project/Requirement&quot;" />
     <MESSAGE value="✨Support multiple key configurations" />
     <MESSAGE value="Fix the bug that causes document display errors." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix the bug that causes document display errors." />
+    <MESSAGE value="✨Basic support for vector text" />
+    <option name="LAST_COMMIT_MESSAGE" value="✨Basic support for vector text" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

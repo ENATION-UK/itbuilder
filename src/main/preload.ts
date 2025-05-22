@@ -35,9 +35,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
     runMavenCommand: ( args: string[], cwd?: string) => ipcRenderer.invoke('run-mvn-command', args, cwd),
     selectFolder: () => ipcRenderer.invoke('dialog:select-folder'),
 
+    // hnswlib
     addVector:  (id:number, vector:  number[]) => ipcRenderer.invoke('hnsw:addVector',  id, vector),
     searchVector:  (vector:  number[],k:number) => ipcRenderer.invoke('hnsw:searchVector',   vector,k),
     saveIndex: () => ipcRenderer.invoke('hnsw:saveIndex'),
     loadIndex: () => ipcRenderer.invoke('hnsw:loadIndex'),
+
+    // 数据库接口
+    runQuery: (sql:string, params: any[]) => ipcRenderer.invoke('db:runQuery', sql, params),
+    fetchAll: (sql:string, params: any[]) => ipcRenderer.invoke('db:fetchAll', sql, params),
+    fetchOne: (sql:string, params: any[]) => ipcRenderer.invoke('db:fetchOne', sql, params),
 });
 

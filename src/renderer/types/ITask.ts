@@ -26,6 +26,7 @@ export abstract class Task implements ITask {
 
 
     async readPrompt(promptPath: string): Promise<string> {
+        readFramework();
         const fullPath = `prompts/${promptPath}`
         return await ElectronAPI.readAppFile(fullPath);
     }
@@ -64,11 +65,11 @@ export abstract class Task implements ITask {
 
     }
 
-    protected async codeAnalyst(code:string): Promise<FunctionInfo>{
+    protected async codeAnalyst(code:string): Promise<SourceCode>{
         const sysPrompt = await this.readPrompt("code-analyst.txt");
         let jsonText =  await chat(sysPrompt, code);
         jsonText = await this.extractCode(jsonText);
-        console.log(jsonText);
+        // console.log(jsonText);
         return JSON.parse(jsonText);
     }
 

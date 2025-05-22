@@ -1,9 +1,10 @@
-import {app, BrowserWindow, ipcMain} from 'electron';
+import {app, BrowserWindow, ipcMain,dialog} from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import fs from "fs";
 import {spawn} from "child_process";
 import './hnswlib-service';
+import './database'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {

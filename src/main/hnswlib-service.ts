@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron';
+import {app, ipcMain} from 'electron';
 import { HierarchicalNSW } from 'hnswlib-node';
 import fs from 'fs';
 import path from 'path';
@@ -6,7 +6,8 @@ import path from 'path';
 const space = 'cosine';
 const dim = 1024;
 const maxElements = 10000;
-const indexFilePath = path.join(__dirname, 'hnsw_index.dat');
+const indexFilePath = path.join(app.getPath('userData'), 'hnsw_index.dat');
+
 console.log('[HNSWLIB] Loading index from file:', indexFilePath)
 let index = new HierarchicalNSW(space, dim);
 index.initIndex(maxElements);

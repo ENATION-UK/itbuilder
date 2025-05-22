@@ -1,16 +1,13 @@
 import  {OpenAI} from 'openai';
 import {ChatCompletionMessage, ChatCompletionMessageParam} from 'openai/resources/chat';
 import {loadSettings, settings} from "./settings";
-import {KeyManager} from "./KeyManager";
-
-import {HierarchicalNSW} from "hnswlib-node";
+import {getKeyManager, KeyManager} from "./KeyManager";
 
 const MAX_TOKENS = 8192;
 
 
 export async function getEmbedding(text: string): Promise<Array<number>> {
-    await loadSettings(); // 确保 settings 加载完成
-    const keyManager = new KeyManager(settings.apiKey);
+    const keyManager = await getKeyManager();
     const {client, release} = await keyManager.getClient();
 
     try {
@@ -25,24 +22,6 @@ export async function getEmbedding(text: string): Promise<Array<number>> {
 }
 
 
-function cosineSimilarity(a, b) {
-    const dot = a.reduce((sum, ai, i) => sum + ai * b[i], 0);
-    const magA = Math.sqrt(a.reduce((sum, ai) => sum + ai * ai, 0));
-    const magB = Math.sqrt(b.reduce((sum, bi) => sum + bi * bi, 0));
-    return dot / (magA * magB);
-}
-
-
-export function findMostSimilar(queryVec, documentVectors, topK = 3) {
-    return documentVectors
-        .map(doc => ({
-            id: doc.id,
-            text: doc.text,
-            score: cosineSimilarity(queryVec, doc.embedding),
-        }))
-        .sort((a, b) => b.score - a.score)
-        .slice(0, topK);
-}
 
 /**
  * 处理 function call 并调用回调执行相应函数
@@ -56,8 +35,7 @@ export async function functionChat(
     functions:  OpenAI.Chat.ChatCompletionCreateParams.Function[],
     executeFunction: (functionName: string, args: any) => Promise<string>
 ) {
-    await loadSettings(); // 确保 settings 加载完成
-    const keyManager = new KeyManager(settings.apiKey);
+    const keyManager = await getKeyManager();
     const {client, release} = await keyManager.getClient();
 
     try {
@@ -101,8 +79,7 @@ export async function functionChat(
 }
 
 export async function* streamChat(sysPrompt: string, userIdea: string): AsyncGenerator<string> {
-    await loadSettings(); // 确保 settings 加载完成
-    const keyManager = new KeyManager(settings.apiKey);
+    const keyManager = await getKeyManager();
     const {client, release} = await keyManager.getClient();
 
     const chatCompletion = await client.chat.completions.create({
@@ -139,8 +116,8 @@ export async function chat(sysPrompt: string, userIdea: string): Promise<string 
 }
 
 async function innerChat(sysPrompt: string, userIdea: string): Promise<string | null> {
-    await loadSettings(); // 确保 settings 加载完成
-    const keyManager = new KeyManager(settings.apiKey);
+
+    const keyManager = await getKeyManager();
     const {client, release} = await keyManager.getClient(); // 获取客户端，并控制并发
 
     try {

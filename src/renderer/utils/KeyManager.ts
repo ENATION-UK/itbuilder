@@ -75,3 +75,17 @@ export class KeyManager {
         throw new Error('No API key available');
     }
 }
+
+let keyManagerInstance: KeyManager | null = null;
+
+export async function getKeyManager(): Promise<KeyManager> {
+    if (!keyManagerInstance) {
+        await loadSettings(); // 确保 settings 加载完成
+
+        if (!settings.apiKey) {
+            throw new Error('API key not initialized in settings');
+        }
+        keyManagerInstance = new KeyManager(settings.apiKey);
+    }
+    return keyManagerInstance;
+}

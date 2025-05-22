@@ -18,7 +18,9 @@
       <!-- 创建项目按钮 -->
       <n-button @click="openCreateProjectDialog">创建项目</n-button>
       <n-button @click="goPlay">play</n-button>
-      <n-button @click="goPlay1">play1</n-button>
+      <n-button @click="goPlay1">search test</n-button>
+      <n-button @click="goPlay3">scan</n-button>
+      <n-button @click="codeDiff">diff</n-button>
 
       <!-- 创建项目对话框 -->
       <n-modal v-model:show="createProjectDialogVisible" title="创建项目">
@@ -88,11 +90,17 @@ const goDetail= (project) => {
 const goPlay= () => {
   router.push(`/play`)
 };
+const codeDiff= () => {
+  router.push(`/diff`)
+};
 
 const goPlay1= () => {
   router.push(`/play1`)
 };
 
+const goPlay3= () => {
+  router.push(`/play3`)
+};
 
 const handleEditProject= (project) => {
   // 打开编辑对话框，并预填项目信息
