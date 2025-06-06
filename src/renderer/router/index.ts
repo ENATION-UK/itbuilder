@@ -62,6 +62,11 @@ const router = createRouter({
       component: () => import('../pages/task-run-test.vue'),
     },
     {
+      path: '/embedding-example',
+      name: 'embedding-example',
+      component: () => import('../pages/EmbeddingExample.vue'),
+    },
+    {
       path: '/diff',
       name: 'diff',
       component: () => import('../pages/CodeDiff.vue'),

@@ -20,6 +20,7 @@
       <n-button @click="goPlay">play</n-button>
       <n-button @click="goPlay1">search test</n-button>
       <n-button @click="goPlay3">scan</n-button>
+      <n-button @click="tryEmbedding">Embedding Example</n-button>
       <n-button @click="codeDiff">diff</n-button>
 
       <!-- 创建项目对话框 -->
@@ -100,6 +101,10 @@ const goPlay1= () => {
 
 const goPlay3= () => {
   router.push(`/play3`)
+};
+
+const tryEmbedding= () => {
+  router.push(`/embedding-example`)
 };
 
 const handleEditProject= (project) => {
