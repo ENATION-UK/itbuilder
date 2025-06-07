@@ -23,6 +23,8 @@ interface ElectronAPI {
     runQuery: (sql: string, params?: any[] | Record<string, any>) => Promise<any>;
     fetchAll: (sql: string, params?: any[] | Record<string, any>) => Promise<any[]>;
     fetchOne: (sql: string, params?: any[] | Record<string, any>) => Promise<any>;
+
+    runEmbedding: (text: string | string[]) => Promise<any>;
 }
 
 declare interface Window {

@@ -5,6 +5,7 @@ import fs from "fs";
 import {spawn} from "child_process";
 import './hnswlib-service';
 import './database'
+import {runEmbedding} from "./model";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -293,3 +294,5 @@ ipcMain.handle('dialog:select-folder', async () => {
         return result.filePaths[0]; // 返回选中的文件夹路径
     }
 });
+
+ipcMain.handle('transformers:runEmbedding', runEmbedding)

@@ -52,6 +52,7 @@
   "license": " AGPL-3.0",
   "dependencies": {
     "@dagrejs/dagre": "^1.1.4",
+    "@huggingface/transformers": "^3.5.2",
     "@vicons/fluent": "^0.13.0",
     "@vue-flow/core": "^1.42.5",
     "better-sqlite3": "^11.10.0",

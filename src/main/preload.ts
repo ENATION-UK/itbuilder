@@ -45,5 +45,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     runQuery: (sql:string, params: any[]) => ipcRenderer.invoke('db:runQuery', sql, params),
     fetchAll: (sql:string, params: any[]) => ipcRenderer.invoke('db:fetchAll', sql, params),
     fetchOne: (sql:string, params: any[]) => ipcRenderer.invoke('db:fetchOne', sql, params),
+
+    // Embedding
+    runEmbedding: (text: string | string[]) => ipcRenderer.invoke('transformers:runEmbedding', text)
 });
 
